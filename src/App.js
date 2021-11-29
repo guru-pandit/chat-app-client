@@ -1,23 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { Dashboard, Login, Message, Register } from './components';
+import { useSelector } from "react-redux";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 function App() {
+  const navigate = useNavigate();
+  const authState = useSelector((state) => state.auth);
+  console.log("App.js:autoState:- ", authState);
+
+  useEffect(() => {
+    if (authState.isLoggedIn) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='w-full h-screen'>
+      {/* <Routes>
+        {
+          authState.isLoggedIn ? (
+            <>
+              <Route exact path="/dashboard" element={<Dashboard />} />
+            </>
+          ) : (
+            <>
+              <Route exact path="/" element={<Login />} />
+              <Route exact path="/register" element={<Register />} />
+            </>
+          )
+        }
+
+      </Routes> */}
+      <Routes>
+        <Route exact path="/dashboard" element={<Message />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/register" element={<Register />} />
+      </Routes>
     </div>
   );
 }
