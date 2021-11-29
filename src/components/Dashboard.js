@@ -1,9 +1,11 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import { PaperAirplaneIcon } from '@heroicons/react/solid';
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ChatSection from './ChatSection';
 
 const user = {
     name: 'Tom Cook',
@@ -11,6 +13,21 @@ const user = {
     imageUrl:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
+
+const users = [
+    {
+        name: "Guruprasad",
+        id: 2,
+        phone: "7709401793",
+        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    {
+        name: "Chaitanya",
+        id: 3,
+        phone: "8805527549",
+        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    }
+]
 
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -25,17 +42,16 @@ function classNames(...classes) {
 const Dashboard = () => {
     const navigate = useNavigate();
     const authState = useSelector((state) => state.auth);
-    console.log("Dashboard:authstate:- ", authState);
 
     useEffect(() => {
         if (!authState.isLoggedIn) {
             navigate("/");
         }
-    }, [])
+    }, []);
 
     return (
         <>
-            <div className="min-h-full">
+            <div className="min-h-full flex flex-col">
                 <Disclosure as="nav" className="bg-gray-800">
                     {({ open }) => (
                         <>
@@ -152,18 +168,38 @@ const Dashboard = () => {
                     )}
                 </Disclosure>
 
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                    </div>
-                </header>
-                <main>
-                    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                        {/* Replace with your content */}
-                        <div className="px-4 py-6 sm:px-0">
-                            <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
+                <main className='flex-grow flex '>
+                    <div className="flex-grow flex justify-start">
+                        {/* left sidebar */}
+                        <div className='w-80 bg-gray-800'>
+                            <div className='h-full flex flex-col'>
+                                <div className="pt-0 mx-1 mb-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Search name or group"
+                                        className="px-3 py-2 placeholder-gray-300 text-white bg-gray-600 relative rounded text-md border-0 outline-none focus:outline-none w-full" />
+                                </div>
+                                <div className=''>
+                                    {
+                                        users.map((user) => (
+                                            <div key={user.id} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
+                                                <div className="flex-shrink-0">
+                                                    <img className="h-12 w-12 rounded-full" src={user.imageUrl} alt="" />
+                                                </div>
+                                                <div className="ml-3">
+                                                    <div className="text-base font-medium leading-none text-white">{user.name}</div>
+                                                    <div className="text-sm font-normal leading-none text-gray-400 mt-1.5">{user.phone}</div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        {/* /End replace */}
+                        {/* right sidebar */}
+                        <div className='flex-grow'>
+                            <ChatSection />
+                        </div>
                     </div>
                 </main>
             </div>

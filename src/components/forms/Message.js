@@ -20,8 +20,16 @@ const Message = () => {
             })
         });
 
-        socket.current.on("message", (data) => {
-            console.log(data);
+        socket.current.on("message", (msg) => {
+            console.log("Received message:- ", msg);
+            let receivedMessage = {
+                body: msg.Body,
+                senderID: msg.SenderID,
+                senderName: "Guruprasad",
+                receiverID: msg.ReceiverID,
+                type: 'INCOMMING'
+            }
+            setMessageArray([...messageArray, receivedMessage]);
         })
 
         return () => socket.current.disconnect();
@@ -34,7 +42,7 @@ const Message = () => {
             senderID: authState.user.id,
             senderName: authState.user.Name,
             receiverID: 2,
-            type: 'SENT'
+            type: 'OUTGOING'
         }
         setMessageArray([...messageArray, msg]);
 
@@ -47,8 +55,8 @@ const Message = () => {
                 messageArray.map((msg, i) => {
                     return (
                         <div className="w-full border border-red-500" key={i}>
-                            <p className={msg.type === "SENT" ? "text-right" : "text-left"}>{msg.senderName}</p>
-                            <p className={msg.type === "SENT" ? "text-right" : "text-left"}>{msg.body}</p>
+                            <p className={msg.type === "OUTGOING" ? "text-right" : "text-left"}>{msg.senderName}</p>
+                            <p className={msg.type === "OUTGOING" ? "text-right" : "text-left"}>{msg.body}</p>
                         </div>
                     )
                 })

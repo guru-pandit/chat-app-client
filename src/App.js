@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div className='w-full h-screen'>
-      {/* <Routes>
+      <Routes>
         {
           authState.isLoggedIn ? (
             <>
@@ -26,17 +26,11 @@ function App() {
             </>
           ) : (
             <>
-              <Route exact path="/" element={<Login />} />
+              <Route exact path="/login" element={<Login />} />
               <Route exact path="/register" element={<Register />} />
             </>
           )
         }
-
-      </Routes> */}
-      <Routes>
-        <Route exact path="/dashboard" element={<Message />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register" element={<Register />} />
       </Routes>
     </div>
   );
