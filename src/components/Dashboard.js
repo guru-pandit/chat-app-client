@@ -1,29 +1,22 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-import { PaperAirplaneIcon } from '@heroicons/react/solid';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ChatSection from './ChatSection';
-
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+import { getUserAction } from "../actions/chat.action";
 
 const users = [
     {
-        name: "Guruprasad",
         id: 2,
+        name: "Guruprasad",
         phone: "7709401793",
         imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
     },
     {
-        name: "Chaitanya",
         id: 3,
+        name: "Chaitanya",
         phone: "8805527549",
         imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
     }
@@ -42,12 +35,23 @@ function classNames(...classes) {
 const Dashboard = () => {
     const navigate = useNavigate();
     const authState = useSelector((state) => state.auth);
+    const chatState = useSelector((state) => state.chat);
+    const dispatch = useDispatch();
+    console.log("chatState:- ", chatState);
 
     useEffect(() => {
         if (!authState.isLoggedIn) {
             navigate("/");
         }
     }, []);
+
+    const getUserDetails = (id) => {
+        dispatch(getUserAction(id)).then(() => {
+            console.log("Get user details success");
+        }).catch(() => {
+            console.log("Get user details failed");
+        })
+    }
 
     return (
         <>
@@ -84,7 +88,7 @@ const Dashboard = () => {
                                                 <div>
                                                     <Menu.Button className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                                         <span className="sr-only">Open user menu</span>
-                                                        <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                                                        <img className="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition
@@ -136,7 +140,7 @@ const Dashboard = () => {
                                 <div className="pt-4 pb-3 border-t border-gray-700">
                                     <div className="flex items-center px-5">
                                         <div className="flex-shrink-0">
-                                            <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                                            <img className="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                                         </div>
                                         <div className="ml-3">
                                             <div className="text-base font-medium leading-none text-white">{authState.user.Name}</div>
@@ -171,7 +175,7 @@ const Dashboard = () => {
                 <main className='flex-grow flex '>
                     <div className="flex-grow flex justify-start">
                         {/* left sidebar */}
-                        <div className='w-80 bg-gray-800'>
+                        <div className='w-72 bg-gray-800'>
                             <div className='h-full flex flex-col'>
                                 <div className="pt-0 mx-1 mb-4">
                                     <input
@@ -182,7 +186,7 @@ const Dashboard = () => {
                                 <div className=''>
                                     {
                                         users.map((user) => (
-                                            <div key={user.id} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
+                                            <div key={user.id} onClick={() => getUserDetails(user.id)} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
                                                 <div className="flex-shrink-0">
                                                     <img className="h-12 w-12 rounded-full" src={user.imageUrl} alt="" />
                                                 </div>
@@ -198,7 +202,7 @@ const Dashboard = () => {
                         </div>
                         {/* right sidebar */}
                         <div className='flex-grow'>
-                            <ChatSection />
+                            <ChatSection user={chatState.user} />
                         </div>
                     </div>
                 </main>
