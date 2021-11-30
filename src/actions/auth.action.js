@@ -4,7 +4,7 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
-export const LOGOUT = "LOGOUT";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
 export function registerAction(name, phone, password) {
     console.log("Register:Action:- ", name + " " + phone + " " + password);
@@ -34,6 +34,15 @@ export function loginAction(phone, password) {
             dispatch({ type: LOGIN_FAIL });
             return Promise.reject();
         })
+    }
+};
+
+
+export function logoutAction() {
+    console.log("Logout:Action");
+    return (dispatch) => {
+        localStorage.setItem("user", JSON.stringify({}))
+        return dispatch({ type: LOGOUT_SUCCESS });
     }
 };
 

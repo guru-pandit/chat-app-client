@@ -12,7 +12,7 @@ function App() {
     if (authState.isLoggedIn) {
       navigate("/dashboard");
     } else {
-      navigate("/login");
+      navigate("/");
     }
   }, [])
 
@@ -26,7 +26,7 @@ function App() {
             </>
           ) : (
             <>
-              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/" element={<Login />} />
               <Route exact path="/register" element={<Register />} />
             </>
           )

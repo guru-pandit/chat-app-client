@@ -6,9 +6,11 @@ import axios from "../services/axios";
 import { addMessage } from "../actions/chat.action";
 
 const ChatSection = ({ user }) => {
+    console.log("ChatSection-props:- ", user);
     const [message, setMessage] = useState("");
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
+    console.log("ChatState-msgs:- ", chatState.messages);
     const dispatch = useDispatch();
 
     const socket = useRef();
@@ -28,9 +30,9 @@ const ChatSection = ({ user }) => {
         socket.current.on("message", (msg) => {
             console.log("Received message:- ", msg);
             let receivedMessage = {
-                body: msg.Body,
-                senderID: msg.SenderID,
-                receiverID: msg.ReceiverID,
+                Body: msg.Body,
+                SenderID: msg.SenderID,
+                ReceiverID: msg.ReceiverID,
             }
             dispatch(addMessage(receivedMessage));
         })
@@ -41,16 +43,14 @@ const ChatSection = ({ user }) => {
     const onSubmitHandler = (e) => {
         e.preventDefault()
         let sendingMessage = {
-            body: message,
-            senderID: authState.user.id,
-            receiverID: chatState.user.id,
-            receiverSocketID: chatState.user.socketID,
+            Body: message,
+            SenderID: authState.user.id,
+            ReceiverID: user.id,
+            ReceiverSocketID: user.SocketID,
         }
         dispatch(addMessage(sendingMessage));
 
-        socket.current.emit("message", {
-            body: sendingMessage.body, senderID: sendingMessage.senderID, receiverID: sendingMessage.receiverID, receiverSocketID: sendingMessage.receiverSocketID
-        });
+        socket.current.emit("message", { ...sendingMessage });
     }
 
     return (
@@ -62,8 +62,8 @@ const ChatSection = ({ user }) => {
                         <img className="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                     </div>
                     <div className="flex-grow ml-3">
-                        <div className="text-base font-semibold leading-none text-gray-900">{user.name}</div>
-                        <div className="text-sm font-normal leading-none text-gray-600 mt-1.5">{user.phone}</div>
+                        <div className="text-base font-semibold leading-none text-gray-900">{user.Name}</div>
+                        <div className="text-sm font-normal leading-none text-gray-600 mt-1.5">{user.Phone}</div>
                     </div>
                     <div className="mx-4 cursor-pointer">
                         <DotsVerticalIcon className="h-5 w-5 text-lg text-gray-600" />
@@ -72,20 +72,24 @@ const ChatSection = ({ user }) => {
             </div>
             {/* messages */}
             <div className='flex-grow'>
-                <div className="flex flex-col justify-end w-full h-full p-2">
-                    {/* received message */}
-                    <div className="flex flex-col self-start max-w-xs bg-indigo-50 mb-2 px-3 py-1 rounded-2xl rounded-bl-none shadow-sm">
-                        <span className="text-base text-left text-medium text-gray-900">Hi Guru</span>
-                        <span className="text-xs text-left font-normal text-gray-400">08:02 am</span>
-                    </div>
-                    {/* sent messaage */}
-                    <div className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
-                        <span className="text-base text-left text-medium text-gray-900">Hi Guruprasad ! jlkjdd jksksjd lfjslj  djfl afajjkl faflajl f jdf lfsdfj l jljf lajflajflajfl </span>
-                        <span className="text-xs text-right font-normal text-gray-400">08:00 am</span>
-                    </div>
+                <div className="h-full w-full overflow-y-auto flex flex-col px-3 my-3" style={{ "maxHeight": "440px" }} >
+                    {
+                        chatState.messages.map((msg, i) => (
+                            msg.SenderID == authState.user.id ? (
+                                <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
+                                    <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
+                                    {/* <span className="text-xs text-right font-normal text-gray-400">08:00 am</span> */}
+                                </div>
+                            ) : (
+                                <div key={i} className="flex flex-col self-start max-w-xs bg-indigo-50 mb-2 px-3 py-1 rounded-2xl rounded-bl-none shadow-sm">
+                                    <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
+                                    {/* <span className="text-xs text-left font-normal text-gray-400">08:02 am</span> */}
+                                </div>
+                            )
+                        ))
+                    }
                 </div>
             </div>
-            {/* message send */}
             <div className=''>
                 <form className="bg-white px-5" onSubmit={onSubmitHandler}>
                     <div className="flex items-center py-2">

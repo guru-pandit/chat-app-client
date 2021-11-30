@@ -1,4 +1,4 @@
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS } from "../actions/auth.action";
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS } from "../actions/auth.action";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -31,6 +31,12 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: false
+            }
+        case LOGOUT_SUCCESS:
+            return {
+                ...state,
+                isLoggedIn: false,
+                user: null
             }
         default:
             return state;

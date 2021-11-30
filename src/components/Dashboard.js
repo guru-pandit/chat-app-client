@@ -1,26 +1,12 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ChatSection from './ChatSection';
-import { getUserAction } from "../actions/chat.action";
-
-const users = [
-    {
-        id: 2,
-        name: "Guruprasad",
-        phone: "7709401793",
-        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-    },
-    {
-        id: 3,
-        name: "Chaitanya",
-        phone: "8805527549",
-        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-    }
-]
+import { getOldMessagesAction, getUserAction, getOtherUsersAction } from "../actions/chat.action";
+import { logoutAction } from "../actions/auth.action"
 
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -43,14 +29,33 @@ const Dashboard = () => {
         if (!authState.isLoggedIn) {
             navigate("/");
         }
+        dispatch(getOtherUsersAction(authState.user.id)).then(() => {
+            console.log("Other users fetched");
+        }).catch((err) => {
+            console.log("Other users fetched failed");
+        });
+        let lastChatUser = JSON.parse(localStorage.getItem("lastChatUser"))
+        getUserDetails(lastChatUser?.id)
     }, []);
 
     const getUserDetails = (id) => {
+        dispatch(getOldMessagesAction(authState.user.id, id));
         dispatch(getUserAction(id)).then(() => {
             console.log("Get user details success");
         }).catch(() => {
             console.log("Get user details failed");
-        })
+        });
+    }
+
+    const onChatUserSelect = (id) => {
+        localStorage.setItem("lastChatUser", JSON.stringify({ id }))
+        getUserDetails(id)
+    }
+
+    const logoutHandler = () => {
+        console.log("Logout hanlder clicked");
+        logoutAction();
+        navigate("/");
     }
 
     return (
@@ -101,7 +106,7 @@ const Dashboard = () => {
                                                     leaveTo="transform opacity-0 scale-95"
                                                 >
                                                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                        {userNavigation.map((item) => (
+                                                        {/* {userNavigation.map((item) => (
                                                             <Menu.Item key={item.name}>
                                                                 {({ active }) => (
                                                                     <a
@@ -115,7 +120,46 @@ const Dashboard = () => {
                                                                     </a>
                                                                 )}
                                                             </Menu.Item>
-                                                        ))}
+                                                        ))} */}
+                                                        <Menu.Item>
+                                                            {({ active }) => (
+                                                                <a
+                                                                    href="#"
+                                                                    className={classNames(
+                                                                        active ? 'bg-gray-100' : '',
+                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                    )}
+                                                                >
+                                                                    Your profile
+                                                                </a>
+                                                            )}
+                                                        </Menu.Item>
+                                                        <Menu.Item>
+                                                            {({ active }) => (
+                                                                <a
+                                                                    href="#"
+                                                                    className={classNames(
+                                                                        active ? 'bg-gray-100' : '',
+                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                    )}
+                                                                >
+                                                                    Settings
+                                                                </a>
+                                                            )}
+                                                        </Menu.Item>
+                                                        <Menu.Item>
+                                                            {({ active }) => (
+                                                                <button
+                                                                    onClick={logoutHandler}
+                                                                    className={classNames(
+                                                                        active ? 'bg-gray-100' : '',
+                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                    )}
+                                                                >
+                                                                    Sign out
+                                                                </button>
+                                                            )}
+                                                        </Menu.Item>
                                                     </Menu.Items>
                                                 </Transition>
                                             </Menu>
@@ -154,7 +198,7 @@ const Dashboard = () => {
                                             <BellIcon className="h-6 w-6" aria-hidden="true" />
                                         </button>
                                     </div>
-                                    <div className="mt-3 px-2 space-y-1">
+                                    <div className="mt-3 px-2 space-y-1 border-2 border-blue-600">
                                         {userNavigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
@@ -185,14 +229,14 @@ const Dashboard = () => {
                                 </div>
                                 <div className=''>
                                     {
-                                        users.map((user) => (
-                                            <div key={user.id} onClick={() => getUserDetails(user.id)} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
+                                        chatState.otherUsers.map((user) => (
+                                            <div key={user.id} onClick={() => onChatUserSelect(user.id)} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
                                                 <div className="flex-shrink-0">
-                                                    <img className="h-12 w-12 rounded-full" src={user.imageUrl} alt="" />
+                                                    <img className="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
                                                 </div>
                                                 <div className="ml-3">
-                                                    <div className="text-base font-medium leading-none text-white">{user.name}</div>
-                                                    <div className="text-sm font-normal leading-none text-gray-400 mt-1.5">{user.phone}</div>
+                                                    <div className="text-base font-medium leading-none text-white">{user.Name}</div>
+                                                    <div className="text-sm font-normal leading-none text-gray-400 mt-1.5">{user.Phone}</div>
                                                 </div>
                                             </div>
                                         ))
@@ -202,7 +246,7 @@ const Dashboard = () => {
                         </div>
                         {/* right sidebar */}
                         <div className='flex-grow'>
-                            <ChatSection user={chatState.user} />
+                            <ChatSection user={chatState.chatUser} />
                         </div>
                     </div>
                 </main>

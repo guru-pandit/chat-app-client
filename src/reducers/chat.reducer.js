@@ -1,8 +1,9 @@
-import { GET_USER_SUCCESS, GET_USER_FAILED, ADD_MESSAGE } from "../actions/chat.action";
+import { GET_USER_SUCCESS, GET_USER_FAILED, ADD_MESSAGE, GET_OLD_MESSAGES_SUCCESS, GET_OLD_MESSAGES_FAILED, GET_OTHER_USERS_SUCCESS, GET_OTHER_USERS_FAILED } from "../actions/chat.action";
 
 const initialState = {
-    user: { id: "5", name: "Guruprasad Pandit", phone: "1212121212", socketID: "" },
-    messages: []
+    chatUser: {},
+    messages: [],
+    otherUsers: []
 }
 
 const chatReducer = (state = initialState, action) => {
@@ -12,14 +13,35 @@ const chatReducer = (state = initialState, action) => {
         case GET_USER_SUCCESS:
             console.log("GET_USER_SUCCESS-payload:- ", payload);
             return {
-                ...state, user: {
+                ...state,
+                chatUser: {
                     id: payload.id,
-                    name: payload.name,
-                    phone: payload.phone,
-                    socketID: payload.socketID
+                    Name: payload.name,
+                    Phone: payload.phone,
+                    SocketID: payload.socketID
                 }
             }
         case GET_USER_FAILED:
+            return {
+                ...state,
+            }
+        case GET_OTHER_USERS_SUCCESS:
+            console.log("GET_OTHER_USERS_SUCCESS-payload ", payload);
+            return {
+                ...state,
+                otherUsers: [...payload]
+            }
+        case GET_OTHER_USERS_FAILED:
+            return {
+                ...state,
+            }
+        case GET_OLD_MESSAGES_SUCCESS:
+            console.log("GET_OLD_MESSAGE_SUCCESS-payload", payload);
+            return {
+                ...state,
+                messages: [...payload]
+            }
+        case GET_OLD_MESSAGES_FAILED:
             return {
                 ...state,
             }
