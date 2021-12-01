@@ -14,6 +14,7 @@ const ChatSection = ({ user }) => {
     const dispatch = useDispatch();
 
     const socket = useRef();
+    const messageEndRef = useRef();
 
     useEffect(() => {
         let baseUrl = process.env.SERVER || "http://localhost:4000"
@@ -39,6 +40,10 @@ const ChatSection = ({ user }) => {
 
         return () => socket.current.disconnect();
     }, [])
+
+    useEffect(() => {
+        messageEndRef.current.scrollIntoView()
+    }, [chatState.messages])
 
     const onSubmitHandler = (e) => {
         e.preventDefault()
@@ -88,6 +93,7 @@ const ChatSection = ({ user }) => {
                             )
                         ))
                     }
+                    <div ref={messageEndRef} />
                 </div>
             </div>
             <div className=''>
