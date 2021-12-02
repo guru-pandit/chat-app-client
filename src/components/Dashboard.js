@@ -9,12 +9,18 @@ import { getOldMessagesAction, getUserAction, getOtherUsersAction, } from "../ac
 import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
 import socket from '../services/socket';
 import { setConnection } from "../services/chat";
+import { toast, ToastContainer } from "react-toastify";
 
-const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
-]
+const toastOptions = {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -46,6 +52,7 @@ const Dashboard = () => {
         // on disconnect listener
         socket.on("disconnect", () => {
             console.log("Disconnected... ");
+            toast.error("Disconnected...", toastOptions);
             dispatch(connectionFailAction());
         });
 
@@ -81,6 +88,7 @@ const Dashboard = () => {
 
     return (
         <>
+            <ToastContainer />
             <div className="min-h-full flex flex-col">
                 <Disclosure as="nav" className="bg-gray-800">
                     {({ open }) => (
