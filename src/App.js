@@ -1,37 +1,43 @@
 import { Dashboard, Login, Message, Register } from './components';
 import { useSelector } from "react-redux";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 
 function App() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const authState = useSelector((state) => state.auth);
   console.log("App.js:autoState:- ", authState);
 
   useEffect(() => {
     if (authState.isLoggedIn) {
-      navigate("/dashboard");
+      history.push("/dashboard");
     } else {
-      navigate("/");
+      history.push("/");
     }
   }, [])
 
   return (
     <div className='w-full h-screen'>
-      <Routes>
+      <Switch>
         {
           authState.isLoggedIn ? (
             <>
-              <Route exact path="/dashboard" element={<Dashboard />} />
+              <Route exact path="/dashboard" >
+                <Dashboard />
+              </Route>
             </>
           ) : (
             <>
-              <Route exact path="/" element={<Login />} />
-              <Route exact path="/register" element={<Register />} />
+              <Route exact path="/">
+                <Login />
+              </Route>
+              <Route exact path="/register">
+                <Register />
+              </Route>
             </>
           )
         }
-      </Routes>
+      </Switch>
     </div>
   );
 }

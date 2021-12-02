@@ -41,7 +41,7 @@ export function loginAction(phone, password) {
 export function logoutAction() {
     console.log("Logout:Action");
     return (dispatch) => {
-        localStorage.setItem("user", JSON.stringify({}))
+        localStorage.removeItem("user");
         return dispatch({ type: LOGOUT_SUCCESS });
     }
 };

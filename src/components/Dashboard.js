@@ -1,9 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline';
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ChatSection from './ChatSection';
 import { getOldMessagesAction, getUserAction, getOtherUsersAction } from "../actions/chat.action";
 import { logoutAction } from "../actions/auth.action"
@@ -19,7 +19,7 @@ function classNames(...classes) {
 }
 
 const Dashboard = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (!authState.isLoggedIn) {
-            navigate("/");
+            history.push("/");
         }
         dispatch(getOtherUsersAction(authState.user.id)).then(() => {
             console.log("Other users fetched");
@@ -54,8 +54,8 @@ const Dashboard = () => {
 
     const logoutHandler = () => {
         console.log("Logout hanlder clicked");
-        logoutAction();
-        navigate("/");
+        dispatch(logoutAction());
+        history.push("/");
     }
 
     return (
@@ -198,8 +198,8 @@ const Dashboard = () => {
                                             <BellIcon className="h-6 w-6" aria-hidden="true" />
                                         </button>
                                     </div>
-                                    <div className="mt-3 px-2 space-y-1 border-2 border-blue-600">
-                                        {userNavigation.map((item) => (
+                                    <div className="mt-3 px-2 space-y-1">
+                                        {/* {userNavigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
                                                 as="a"
@@ -208,7 +208,28 @@ const Dashboard = () => {
                                             >
                                                 {item.name}
                                             </Disclosure.Button>
-                                        ))}
+                                        ))} */}
+                                        <Disclosure.Button
+                                            as="a"
+                                            href="#"
+                                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                                        >
+                                            Your profile
+                                        </Disclosure.Button>
+                                        <Disclosure.Button
+                                            as="a"
+                                            href="#"
+                                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                                        >
+                                            Settings
+                                        </Disclosure.Button>
+                                        <Disclosure.Button
+                                            onClick={logoutHandler}
+                                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                                        >
+                                            Sign out
+                                        </Disclosure.Button>
+
                                     </div>
                                 </div>
                             </Disclosure.Panel>

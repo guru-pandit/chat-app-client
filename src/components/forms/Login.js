@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../actions/auth.action";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const Login = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
     const [user, setUser] = useState({
         phone: "",
         password: ""
@@ -22,7 +22,7 @@ const Login = () => {
         e.preventDefault();
         console.log("OnSubmitHandler");
         dispatch(loginAction(user.phone, user.password)).then(() => {
-            navigate("/dashboard");
+            history.push("/dashboard");
         }).catch(() => {
             console.log("Login failed");
         })
