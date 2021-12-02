@@ -29,7 +29,6 @@ export function getUserAction(id) {
     }
 };
 
-
 export function getOtherUsersAction(id) {
     // console.log("GetOtherUsersAction-id:- ", id);
     return (dispatch) => {
@@ -57,10 +56,10 @@ export function getOldMessagesAction(id1, id2) {
     }
 }
 
-export function addMessage(msg) {
+export function addMessage(receivedMsg) {
     // console.log("SetMessages:- ", msg);
     return (dispatch) => {
-        dispatch({ type: ADD_MESSAGE, payload: msg })
+        dispatch({ type: ADD_MESSAGE, payload: receivedMsg })
     }
 }
 

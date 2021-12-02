@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import socket from "../services/socket";
 import { addMessage } from "../actions/chat.action";
+import moment from "moment";
 
 const ChatSection = ({ user }) => {
     const [message, setMessage] = useState("");
@@ -13,14 +14,17 @@ const ChatSection = ({ user }) => {
     const messageEndRef = useRef();
 
     useEffect(() => {
-        socket.on("message", (msg) => {
+        socket.on("private message", (msg) => {
             console.log("Received message:- ", msg);
             let receivedMessage = {
+                id: msg.id,
                 Body: msg.Body,
                 SenderID: msg.SenderID,
                 ReceiverID: msg.ReceiverID,
+                MessageSentAt: msg.MessageSentAt
             }
             dispatch(addMessage(receivedMessage));
+            socket.emit("private message received", { MsgID: msg.id, MessageReceivedAt: Date.now() });
         })
     }, [])
 
@@ -36,9 +40,10 @@ const ChatSection = ({ user }) => {
             SenderID: authState.user.id,
             ReceiverID: user.id,
             ReceiverSocketID: user.SocketID,
+            MessageSentAt: Date.now()
         }
         dispatch(addMessage(sendingMessage));
-        socket.emit("message", { ...sendingMessage });
+        socket.emit("private message", { ...sendingMessage });
     }
 
     return (
@@ -66,12 +71,12 @@ const ChatSection = ({ user }) => {
                             msg.SenderID == authState.user.id ? (
                                 <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
                                     <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
-                                    {/* <span className="text-xs text-right font-normal text-gray-400">08:00 am</span> */}
+                                    <span className="text-right font-normal text-gray-400" style={{ "fontSize": ".7rem" }}>{moment.utc(msg.MessageSentAt).local().format('LT')}</span>
                                 </div>
                             ) : (
                                 <div key={i} className="flex flex-col self-start max-w-xs bg-indigo-50 mb-2 px-3 py-1 rounded-2xl rounded-bl-none shadow-sm">
                                     <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
-                                    {/* <span className="text-xs text-left font-normal text-gray-400">08:02 am</span> */}
+                                    <span className="text-left font-normal text-gray-400" style={{ "fontSize": ".7rem" }}>{moment.utc(msg.MessageSentAt).local().format('LT')}</span>
                                 </div>
                             )
                         ))
