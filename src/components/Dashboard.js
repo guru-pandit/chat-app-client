@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ChatSection from './ChatSection';
 import { getOldMessagesAction, getUserAction, getOtherUsersAction, } from "../actions/chat.action";
-import { logoutAction } from "../actions/auth.action";
+import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
 import socket from '../services/socket';
 import { setConnection } from "../services/chat";
 
@@ -30,14 +30,23 @@ const Dashboard = () => {
         if (!authState.isLoggedIn) {
             history.push("/");
         }
-        socket.connect()
+        // Connect to the socket
+        socket.connect();
+        // on connect listener
         socket.on("connect", () => {
             console.log("Connected:- ", socket.id);
             setConnection(authState.user.id, socket.id).then((response) => {
-                console.log("Connected-Response:- ", response.data);
+                // console.log("Connected-Response:- ", response.data);
+                dispatch(connectionSuccessAction())
             }).catch((err) => {
                 console.log("Connected-Response-err", err);
+                dispatch(connectionFailAction());
             })
+        });
+        // on disconnect listener
+        socket.on("disconnect", () => {
+            console.log("Disconnected... ");
+            dispatch(connectionFailAction());
         });
 
         dispatch(getOtherUsersAction(authState.user.id)).then(() => {

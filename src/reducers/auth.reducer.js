@@ -1,15 +1,25 @@
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS } from "../actions/auth.action";
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, CONNECTION_SUCCESS, CONNECTION_FAIL } from "../actions/auth.action";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = user
-    ? { isLoggedIn: true, user }
-    : { isLoggedIn: false, user: null };
+    ? { isLoggedIn: true, user, isConnected: false }
+    : { isLoggedIn: false, user: null, isConnected: false };
 
 const authReducer = (state = initialState, action) => {
     let { type, payload } = action;
 
     switch (type) {
+        case CONNECTION_SUCCESS:
+            return {
+                ...state,
+                isConnected: true
+            }
+        case CONNECTION_FAIL:
+            return {
+                ...state,
+                isConnected: false
+            }
         case REGISTER_SUCCESS:
             return {
                 ...state,

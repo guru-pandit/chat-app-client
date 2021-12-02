@@ -1,5 +1,8 @@
 import { login, register } from "../services/auth";
+import { setConnection } from "../services/chat";
 
+export const CONNECTION_SUCCESS = "CONNECTION_SUCCESS";
+export const CONNECTION_FAIL = "CONNECTION_FAIL";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -45,3 +48,14 @@ export function logoutAction() {
     }
 };
 
+export function connectionSuccessAction() {
+    return (dispatch) => {
+        return dispatch({ type: CONNECTION_SUCCESS });
+    }
+}
+
+export function connectionFailAction() {
+    return (dispatch) => {
+        return dispatch({ type: CONNECTION_FAIL });
+    }
+}
