@@ -7,7 +7,7 @@ export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
 export function registerAction(name, phone, password) {
-    console.log("Register:Action:- ", name + " " + phone + " " + password);
+    // console.log("Register:Action:- ", name + " " + phone + " " + password);
     return (dispatch) => {
         return register(name, phone, password).then((response) => {
             console.log("RegisterAPI-Response:-", response);
@@ -21,7 +21,7 @@ export function registerAction(name, phone, password) {
 };
 
 export function loginAction(phone, password) {
-    console.log("Login:Action:- ", + phone + " " + password);
+    // console.log("Login:Action:- ", + phone + " " + password);
     return (dispatch) => {
         return login(phone, password).then((response) => {
             console.log("LoginAPI-Response.data:-", response.data);
@@ -37,9 +37,8 @@ export function loginAction(phone, password) {
     }
 };
 
-
 export function logoutAction() {
-    console.log("Logout:Action");
+    // console.log("Logout-Action");
     return (dispatch) => {
         localStorage.removeItem("user");
         return dispatch({ type: LOGOUT_SUCCESS });

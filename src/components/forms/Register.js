@@ -4,21 +4,17 @@ import { registerAction } from "../../actions/auth.action";
 import { Link } from "react-router-dom";
 
 const Register = () => {
-    const [user, setUser] = useState({
-        uname: "",
-        phone: "",
-        password: ""
-    })
+    const [user, setUser] = useState({ uname: "", phone: "", password: "" })
     const dispatch = useDispatch();
 
-
+    // Input onchange handler
     const onChangeHandler = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     }
 
+    // Sumbit register form
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        console.log("OnSubmitHandler");
         dispatch(registerAction(user.uname, user.phone, user.password));
     }
 

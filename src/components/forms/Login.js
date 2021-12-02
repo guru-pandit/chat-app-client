@@ -5,22 +5,18 @@ import { Link, useHistory } from "react-router-dom";
 
 const Login = () => {
     const history = useHistory();
-    const [user, setUser] = useState({
-        phone: "",
-        password: ""
-    })
+    const [user, setUser] = useState({ phone: "", password: "" })
     const dispatch = useDispatch();
     const authState = useSelector((state) => state.auth);
-    console.log("AuthState:- ", authState);
 
-
+    // Input change hanlder
     const onChangeHandler = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     }
 
+    // Login form submit hanlder
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        console.log("OnSubmitHandler");
         dispatch(loginAction(user.phone, user.password)).then(() => {
             history.push("/dashboard");
         }).catch(() => {

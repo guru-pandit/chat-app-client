@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 function App() {
   const history = useHistory();
   const authState = useSelector((state) => state.auth);
-  console.log("App.js:autoState:- ", authState);
 
   useEffect(() => {
     if (authState.isLoggedIn) {

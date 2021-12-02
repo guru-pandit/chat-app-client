@@ -1,34 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { io } from "socket.io-client";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
-import axios from "../services/axios";
+import socket from "../services/socket";
 import { addMessage } from "../actions/chat.action";
 
 const ChatSection = ({ user }) => {
-    console.log("ChatSection-props:- ", user);
     const [message, setMessage] = useState("");
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
-    console.log("ChatState-msgs:- ", chatState.messages);
     const dispatch = useDispatch();
 
-    const socket = useRef();
     const messageEndRef = useRef();
 
     useEffect(() => {
-        let baseUrl = process.env.SERVER || "http://localhost:4000"
-        socket.current = io(baseUrl);
-        socket.current.on("connect", () => {
-            console.log("Connected:- ", socket.current.id);
-            axios.post("/set-connection", { UserID: authState.user.id, SocketID: socket.current.id }).then((response) => {
-                console.log("Connected-Response:- ", response.data);
-            }).catch((err) => {
-                console.log("Connected-Response-err", err);
-            })
-        });
-
-        socket.current.on("message", (msg) => {
+        socket.on("message", (msg) => {
             console.log("Received message:- ", msg);
             let receivedMessage = {
                 Body: msg.Body,
@@ -37,14 +22,13 @@ const ChatSection = ({ user }) => {
             }
             dispatch(addMessage(receivedMessage));
         })
-
-        return () => socket.current.disconnect();
     }, [])
 
     useEffect(() => {
         messageEndRef.current.scrollIntoView()
     }, [chatState.messages])
 
+    // Message sumbit handler
     const onSubmitHandler = (e) => {
         e.preventDefault()
         let sendingMessage = {
@@ -54,8 +38,7 @@ const ChatSection = ({ user }) => {
             ReceiverSocketID: user.SocketID,
         }
         dispatch(addMessage(sendingMessage));
-
-        socket.current.emit("message", { ...sendingMessage });
+        socket.emit("message", { ...sendingMessage });
     }
 
     return (

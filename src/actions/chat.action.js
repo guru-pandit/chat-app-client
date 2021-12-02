@@ -9,7 +9,7 @@ export const GET_OLD_MESSAGES_FAILED = "GET_OLD_MESSAGES_FAILED";
 export const ADD_MESSAGE = "ADD_MESSAGE";
 
 export function getUserAction(id) {
-    console.log("GetUserAction-id", id);
+    // console.log("GetUserAction-id", id);
     return (dispatch) => {
         return getUser(id).then((response) => {
             console.log("GetUser-Response:-", response);
@@ -31,7 +31,7 @@ export function getUserAction(id) {
 
 
 export function getOtherUsersAction(id) {
-    console.log("GetOtherUsersAction-id:- ", id);
+    // console.log("GetOtherUsersAction-id:- ", id);
     return (dispatch) => {
         return getOtherUsers(id).then((response) => {
             console.log("GetOtherUsers-response:- ", response.data);
@@ -46,7 +46,7 @@ export function getOtherUsersAction(id) {
 }
 
 export function getOldMessagesAction(id1, id2) {
-    console.log("GetOldMessagesAction:- id1;" + id1 + " id2:" + id2);
+    // console.log("GetOldMessagesAction:- id1;" + id1 + " id2:" + id2);
     return (dispatch) => {
         return getOldMessages(id1, id2).then((response) => {
             let payload = response.data
@@ -58,7 +58,7 @@ export function getOldMessagesAction(id1, id2) {
 }
 
 export function addMessage(msg) {
-    console.log("SetMessages:- ", msg);
+    // console.log("SetMessages:- ", msg);
     return (dispatch) => {
         dispatch({ type: ADD_MESSAGE, payload: msg })
     }

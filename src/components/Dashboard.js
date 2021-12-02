@@ -5,8 +5,10 @@ import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline'
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ChatSection from './ChatSection';
-import { getOldMessagesAction, getUserAction, getOtherUsersAction } from "../actions/chat.action";
-import { logoutAction } from "../actions/auth.action"
+import { getOldMessagesAction, getUserAction, getOtherUsersAction, } from "../actions/chat.action";
+import { logoutAction } from "../actions/auth.action";
+import socket from '../services/socket';
+import { setConnection } from "../services/chat";
 
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -23,12 +25,21 @@ const Dashboard = () => {
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
     const dispatch = useDispatch();
-    console.log("chatState:- ", chatState);
 
     useEffect(() => {
         if (!authState.isLoggedIn) {
             history.push("/");
         }
+        socket.connect()
+        socket.on("connect", () => {
+            console.log("Connected:- ", socket.id);
+            setConnection(authState.user.id, socket.id).then((response) => {
+                console.log("Connected-Response:- ", response.data);
+            }).catch((err) => {
+                console.log("Connected-Response-err", err);
+            })
+        });
+
         dispatch(getOtherUsersAction(authState.user.id)).then(() => {
             console.log("Other users fetched");
         }).catch((err) => {
@@ -36,6 +47,8 @@ const Dashboard = () => {
         });
         let lastChatUser = JSON.parse(localStorage.getItem("lastChatUser"))
         getUserDetails(lastChatUser?.id)
+
+        return () => socket.disconnect();
     }, []);
 
     const getUserDetails = (id) => {
@@ -53,7 +66,6 @@ const Dashboard = () => {
     }
 
     const logoutHandler = () => {
-        console.log("Logout hanlder clicked");
         dispatch(logoutAction());
         history.push("/");
     }

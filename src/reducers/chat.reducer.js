@@ -11,7 +11,7 @@ const chatReducer = (state = initialState, action) => {
 
     switch (type) {
         case GET_USER_SUCCESS:
-            console.log("GET_USER_SUCCESS-payload:- ", payload);
+            // console.log("GET_USER_SUCCESS-payload:- ", payload);
             return {
                 ...state,
                 chatUser: {
@@ -26,7 +26,7 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
             }
         case GET_OTHER_USERS_SUCCESS:
-            console.log("GET_OTHER_USERS_SUCCESS-payload ", payload);
+            // console.log("GET_OTHER_USERS_SUCCESS-payload ", payload);
             return {
                 ...state,
                 otherUsers: [...payload]
@@ -36,7 +36,7 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
             }
         case GET_OLD_MESSAGES_SUCCESS:
-            console.log("GET_OLD_MESSAGE_SUCCESS-payload", payload);
+            // console.log("GET_OLD_MESSAGE_SUCCESS-payload", payload);
             return {
                 ...state,
                 messages: [...payload]

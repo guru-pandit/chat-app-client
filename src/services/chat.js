@@ -1,5 +1,9 @@
 import axios from './axios';
 
+export function setConnection(uid, sid) {
+    return axios.post("/set-connection", { UserID: uid, SocketID: sid });
+}
+
 export function getUser(id) {
     return axios.get(`/user/${id}`);
 }
