@@ -2,11 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import socket from "../services/socket";
+import { fetchMessages } from "../services/chat";
 import { addMessage } from "../actions/chat.action";
 import moment from "moment";
 
 const ChatSection = ({ user }) => {
+    // console.log("user:-", user);
     const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([]);
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
     const dispatch = useDispatch();
@@ -14,7 +17,8 @@ const ChatSection = ({ user }) => {
     const messageEndRef = useRef();
 
     useEffect(() => {
-        socket.on("private message", (msg) => {
+        // Listnening for private message
+        socket.once("private message", (msg) => {
             console.log("Received message:- ", msg);
             let receivedMessage = {
                 id: msg.id,
@@ -23,14 +27,30 @@ const ChatSection = ({ user }) => {
                 ReceiverID: msg.ReceiverID,
                 MessageSentAt: msg.MessageSentAt
             }
-            dispatch(addMessage(receivedMessage));
+            // dispatch(addMessage(receivedMessage));
+            fetchMessages(authState.user.id, user.id).then((response) => {
+                // console.log("FetchedMessages:- ", response.data);
+                setMessages(response.data);
+            }).catch((err) => {
+                console.log("FetchedMessages-err:- ", err);
+            })
+
             socket.emit("private message received", { MsgID: msg.id, MessageReceivedAt: Date.now() });
         })
     }, [])
 
     useEffect(() => {
         messageEndRef.current.scrollIntoView()
-    }, [chatState.messages])
+    }, [messages])
+
+    useEffect(() => {
+        fetchMessages(authState.user.id, user.id).then((response) => {
+            // console.log("FetchedMessages:- ", response.data);
+            setMessages(response.data);
+        }).catch((err) => {
+            console.log("FetchedMessages-err:- ", err);
+        })
+    }, [user.id, authState.user.id])
 
     // Message sumbit handler
     const onSubmitHandler = (e) => {
@@ -39,10 +59,13 @@ const ChatSection = ({ user }) => {
             Body: message,
             SenderID: authState.user.id,
             ReceiverID: user.id,
-            ReceiverSocketID: user.SocketID,
+            // ReceiverSocketID: user.SocketID,
             MessageSentAt: Date.now()
         }
-        dispatch(addMessage(sendingMessage));
+        // dispatch(addMessage(sendingMessage));
+
+        setMessages([...messages, sendingMessage]);
+        console.log("Messages-sending:- ", messages);
         socket.emit("private message", { ...sendingMessage });
     }
 
@@ -67,7 +90,7 @@ const ChatSection = ({ user }) => {
             <div className='flex-grow'>
                 <div className="h-full w-full overflow-y-auto flex flex-col px-3 my-3" style={{ "maxHeight": "440px" }} >
                     {
-                        chatState.messages.map((msg, i) => (
+                        messages.map((msg, i) => (
                             msg.SenderID == authState.user.id ? (
                                 <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
                                     <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>

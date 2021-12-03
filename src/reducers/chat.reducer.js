@@ -18,7 +18,7 @@ const chatReducer = (state = initialState, action) => {
                     id: payload.id,
                     Name: payload.name,
                     Phone: payload.phone,
-                    SocketID: payload.socketID
+                    // SocketID: payload.socketID
                 }
             }
         case GET_USER_FAILED:

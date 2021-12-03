@@ -15,3 +15,7 @@ export function getOtherUsers(id) {
 export function getOldMessages(id1, id2) {
     return axios.post(`/chat/private-chat`, { id1, id2 });
 }
+
+export function fetchMessages(id1, id2) {
+    return axios.post(`/chat/private-chat`, { id1, id2 });
+}

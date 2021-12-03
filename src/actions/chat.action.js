@@ -17,7 +17,7 @@ export function getUserAction(id) {
                 id: response.data.id,
                 name: response.data.name,
                 phone: response.data.phone,
-                socketID: response.data.socketID
+                // socketID: response.data.socketID
             }
 
             dispatch({ type: GET_USER_SUCCESS, payload });

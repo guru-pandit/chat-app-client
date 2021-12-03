@@ -61,6 +61,7 @@ const Dashboard = () => {
         }).catch((err) => {
             console.log("Other users fetched failed");
         });
+
         let lastChatUser = JSON.parse(localStorage.getItem("lastChatUser"))
         getUserDetails(lastChatUser?.id)
 
@@ -68,7 +69,7 @@ const Dashboard = () => {
     }, []);
 
     const getUserDetails = (id) => {
-        dispatch(getOldMessagesAction(authState.user.id, id));
+        // dispatch(getOldMessagesAction(authState.user.id, id));
         dispatch(getUserAction(id)).then(() => {
             console.log("Get user details success");
         }).catch(() => {
