@@ -75,7 +75,7 @@ const ChatSection = ({ user }) => {
             <div className=''>
                 <div className="flex items-center p-2 bg-gray-200">
                     <div className="flex-shrink-0">
-                        <img className="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                        <img className="h-12 w-12 rounded-full border border-gray-500" src="/images/user_icon.svg" alt="" />
                     </div>
                     <div className="flex-grow ml-3">
                         <div className="text-base font-semibold leading-none text-gray-900">{user.Name}</div>

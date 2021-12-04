@@ -5,22 +5,9 @@ import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline'
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ChatSection from './ChatSection';
-import { getOldMessagesAction, getUserAction, getOtherUsersAction, } from "../actions/chat.action";
-import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
+import { getUserAction, getOtherUsersAction, } from "../actions/chat.action";
+import { logoutAction } from "../actions/auth.action";
 import socket from '../services/socket';
-import { setConnection } from "../services/chat";
-import { toast, ToastContainer } from "react-toastify";
-
-const toastOptions = {
-    position: "top-right",
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-}
-
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -36,25 +23,6 @@ const Dashboard = () => {
         if (!authState.isLoggedIn) {
             history.push("/");
         }
-        // Connect to the socket
-        socket.connect();
-        // on connect listener
-        socket.on("connect", () => {
-            console.log("Connected:- ", socket.id);
-            setConnection(authState.user.id, socket.id).then((response) => {
-                // console.log("Connected-Response:- ", response.data);
-                dispatch(connectionSuccessAction())
-            }).catch((err) => {
-                console.log("Connected-Response-err", err);
-                dispatch(connectionFailAction());
-            })
-        });
-        // on disconnect listener
-        socket.on("disconnect", () => {
-            console.log("Disconnected... ");
-            toast.error("Disconnected...", toastOptions);
-            dispatch(connectionFailAction());
-        });
 
         dispatch(getOtherUsersAction(authState.user.id)).then(() => {
             console.log("Other users fetched");
@@ -89,7 +57,6 @@ const Dashboard = () => {
 
     return (
         <>
-            <ToastContainer />
             <div className="min-h-full flex flex-col">
                 <Disclosure as="nav" className="bg-gray-800">
                     {({ open }) => (
@@ -118,12 +85,17 @@ const Dashboard = () => {
                                                 <BellIcon className="h-6 w-6" aria-hidden="true" />
                                             </button>
 
+                                            {/* profile name */}
+                                            <div className='ml-2'>
+                                                <h3 className='text-white'>{authState.user.Name}</h3>
+                                            </div>
+
                                             {/* Profile dropdown */}
                                             <Menu as="div" className="ml-3 relative">
                                                 <div>
-                                                    <Menu.Button className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                                    <Menu.Button className="max-w-xs bg-gray-300 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                                         <span className="sr-only">Open user menu</span>
-                                                        <img className="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                                                        <img className="h-8 w-8 rounded-full" src="/images/user_icon.svg" alt="" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition
@@ -183,7 +155,7 @@ const Dashboard = () => {
                                                                     onClick={logoutHandler}
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                        'block px-4 py-2 text-sm text-gray-700 w-full text-left'
                                                                     )}
                                                                 >
                                                                     Sign out
@@ -283,7 +255,7 @@ const Dashboard = () => {
                                         chatState.otherUsers.map((user) => (
                                             <div key={user.id} onClick={() => onChatUserSelect(user.id)} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
                                                 <div className="flex-shrink-0">
-                                                    <img className="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                                                    <img className="h-12 w-12 rounded-full border border-gray-300" src="/images/user_icon.svg" alt="" />
                                                 </div>
                                                 <div className="ml-3">
                                                     <div className="text-base font-medium leading-none text-white">{user.Name}</div>
