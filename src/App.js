@@ -23,6 +23,7 @@ function App() {
   const history = useHistory();
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  console.log("App.js-authState:- ", authState)
 
   useEffect(() => {
     if (authState.isLoggedIn) {
