@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import moment from "moment";
+import ReactTimeAgo from "react-time-ago";
 import socket from "../services/socket";
 import { fetchMessages, getUser, addMessage, updateMessage } from "../services/chat";
 
@@ -18,6 +19,9 @@ const ChatSection = ({ currentChat }) => {
     useEffect(() => {
         console.log("CurrentChat:- ", currentChat);
     }, [currentChat])
+    useEffect(() => {
+        console.log("User:- ", user);
+    }, [user])
 
 
     // Fetching friends details
@@ -50,7 +54,7 @@ const ChatSection = ({ currentChat }) => {
     // Checking arriving message
     useEffect(() => {
         // Listnening for private message
-        socket.on("private message", (msg) => {
+        socket.once("private message", (msg) => {
             console.log("Received message:- ", msg);
             setArrivalMessage(msg)
             // sending received time to backend
@@ -97,7 +101,9 @@ const ChatSection = ({ currentChat }) => {
                     </div>
                     <div className="flex-grow ml-3">
                         <div className="text-base font-semibold leading-none text-gray-900">{user?.Name}
-                            {/* <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full ">  </span> */}
+                            {
+                                user?.ConnectionDetail.IsConnected ? <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full ">  </span> : null
+                            }
                         </div>
                         <div className="text-sm font-normal leading-none text-gray-600 mt-1.5">{user?.Phone}</div>
                     </div>
