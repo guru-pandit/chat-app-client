@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import moment from "moment";
-import ReactTimeAgo from "react-time-ago";
 import socket from "../services/socket";
 import { fetchMessages, getUser, addMessage, updateMessage } from "../services/chat";
 
