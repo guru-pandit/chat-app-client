@@ -1,5 +1,6 @@
 import { login, register } from "../services/auth";
-import { setConnection } from "../services/chat";
+import { loaderToggleAction } from "./common.action";
+import { toast } from "react-toastify";
 
 export const CONNECTION_SUCCESS = "CONNECTION_SUCCESS";
 export const CONNECTION_FAIL = "CONNECTION_FAIL";
@@ -14,9 +15,13 @@ export function registerAction(name, phone, password) {
     return (dispatch) => {
         return register(name, phone, password).then((response) => {
             console.log("RegisterAPI-Response:-", response);
+            dispatch(loaderToggleAction(false));
             dispatch({ type: REGISTER_SUCCESS });
             return Promise.resolve();
         }).catch((err) => {
+            console.log("RegisterAction-err", err.response.data.error);
+            dispatch(loaderToggleAction(false));
+            toast.error(err.response.data.error);
             dispatch({ type: REGISTER_FAIL });
             return Promise.reject();
         })
@@ -31,9 +36,13 @@ export function loginAction(phone, password) {
             if (response.data.authToken) {
                 localStorage.setItem("user", JSON.stringify(response.data));
             }
+            dispatch(loaderToggleAction(false));
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
             return Promise.resolve();
         }).catch((err) => {
+            console.log("LoginAction-err", err.response.data.error);
+            toast.error(err.response.data.error);
+            dispatch(loaderToggleAction(false));
             dispatch({ type: LOGIN_FAIL });
             return Promise.reject();
         })

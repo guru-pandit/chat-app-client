@@ -7,8 +7,8 @@ import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline'
 
 import { ChatSection, Conversation } from '../components';
 import { getUserAction, getConverationsAction } from "../actions/chat.action";
-import { logoutAction } from "../actions/auth.action";
-import { searchOthers, createConversation } from "../services/chat";
+import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
+import { searchOthers, createConversation, setConnection } from "../services/chat";
 import socket from '../services/socket';
 
 function classNames(...classes) {
@@ -26,7 +26,29 @@ const Dashboard = () => {
 
     // check user is logged in or not on first render
     useEffect(() => {
-        if (!authState.isLoggedIn) {
+        if (authState.isLoggedIn) {
+            // Connect to the socket
+            socket.connect();
+
+            // on connect listener
+            socket.on("connect", () => {
+                console.log("Connected:- ", socket.id);
+                setConnection(authState.user.id, socket.id).then((response) => {
+                    // console.log("Connected-Response:- ", response.data);
+                    dispatch(connectionSuccessAction())
+                }).catch((err) => {
+                    console.log("Connected-Response-err", err);
+                    dispatch(connectionFailAction());
+                })
+            });
+
+            // on disconnect listener
+            socket.on("disconnect", () => {
+                console.log("Disconnected... ");
+                // toast.error("Disconnected...", toastOptions);
+                dispatch(connectionFailAction());
+            });
+        } else {
             history.push("/");
         }
 
