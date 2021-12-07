@@ -3,10 +3,10 @@ import { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 
 import { ChatSection, Conversation } from '../components';
-import { getUserAction, getConverationsAction } from "../actions/chat.action";
+import { getConverationsAction } from "../actions/chat.action";
 import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
 import { searchOthers, createConversation, setConnection } from "../services/chat";
 import socket from '../services/socket';
@@ -16,10 +16,12 @@ function classNames(...classes) {
 }
 
 const Dashboard = () => {
+    const history = useHistory();
     const [currentChat, setCurrentChat] = useState(null);
     const [search, setSearch] = useState("");
     const [others, setOthers] = useState([]);
-    const history = useHistory();
+
+    // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
     const dispatch = useDispatch();

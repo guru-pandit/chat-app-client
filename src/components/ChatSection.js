@@ -1,27 +1,30 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import moment from "moment";
+
 import socket from "../services/socket";
-import { fetchMessages, getUser, addMessage, updateMessage } from "../services/chat";
+import { fetchMessages, getUser, updateMessage } from "../services/chat";
 
 const ChatSection = ({ currentChat }) => {
-    // console.log("user:-", user);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [user, setUser] = useState(null);
-    const authState = useSelector((state) => state.auth);
-
+    // ref to the dummy div
     const messageEndRef = useRef();
 
+    // Redux selector and dispatch
+    const authState = useSelector((state) => state.auth);
+
+    // Follwing method runs if currentChat update
     useEffect(() => {
         console.log("CurrentChat:- ", currentChat);
     }, [currentChat])
+    // Follwing method runs if user update
     useEffect(() => {
         console.log("User:- ", user);
     }, [user])
-
 
     // Fetching friends details
     useEffect(() => {
@@ -65,7 +68,7 @@ const ChatSection = ({ currentChat }) => {
         })
     }, [])
 
-    // dding arrival message to the messages array
+    // adding arrival message to the messages array
     useEffect(() => {
         arrivalMessage && currentChat?.Members.includes(arrivalMessage.SenderID.toString()) && setMessages([...messages, arrivalMessage])
     }, [arrivalMessage, currentChat])
@@ -86,6 +89,7 @@ const ChatSection = ({ currentChat }) => {
             MessageSentAt: Date.now()
         }
 
+        // emiting socket event for private message and then adding message the array
         socket.emit("private message", sendingMessage);
         setMessages([...messages, sendingMessage])
     }

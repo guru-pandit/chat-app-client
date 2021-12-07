@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+
 import { getUser } from "../services/chat"
 
 const Conversation = ({ conversation, currentChat }) => {
-    const authState = useSelector((state) => state.auth);
     const [user, setUser] = useState(null);
 
+    // Redux selector and dispatch
+    const authState = useSelector((state) => state.auth);
+
+    // following method runs when conversation update
     useEffect(() => {
         const friendsID = conversation?.Members?.find((f) => f != authState.user.id);
         // console.log("FriendsID:- ", friendsID);
