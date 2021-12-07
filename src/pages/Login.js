@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { loginAction } from "../../actions/auth.action";
+import { loginAction } from "../actions/auth.action";
 import { Link, useHistory } from "react-router-dom";
 
 const Login = () => {

@@ -1,11 +1,7 @@
-import Login from "./forms/Login";
-import Message from "./forms/Message";
-import Register from "./forms/Register";
-import Dashboard from "./Dashboard";
+import ChatSection from "./ChatSection";
+import Conversation from "./Conversation";
 
 export {
-    Login,
-    Message,
-    Register,
-    Dashboard
+    ChatSection,
+    Conversation
 }

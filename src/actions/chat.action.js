@@ -1,44 +1,20 @@
-import { getUser, getOldMessages, getOtherUsers } from "../services/chat";
+import { getOldMessages, getConversation, searchOthers } from "../services/chat";
 
-export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
-export const GET_USER_FAILED = "GET_USER_FAILED";
-export const GET_OTHER_USERS_SUCCESS = "GET_OTHER_USERS_SUCCESS";
-export const GET_OTHER_USERS_FAILED = "GET_OTHER_USERS_FAILED";
+export const GET_CONVERSATION_SUCCESS = "GET_CONVERSATION_SUCCESS";
+export const GET_CONVERSATION_FAILED = "GET_CONVERSATION_FAILED";
 export const GET_OLD_MESSAGES_SUCCESS = "GET_OLD_MESSAGES_SUCCESS";
 export const GET_OLD_MESSAGES_FAILED = "GET_OLD_MESSAGES_FAILED";
-export const ADD_MESSAGE = "ADD_MESSAGE";
 
-export function getUserAction(id) {
-    // console.log("GetUserAction-id", id);
-    return (dispatch) => {
-        return getUser(id).then((response) => {
-            console.log("GetUser-Response:-", response);
-            let payload = {
-                id: response.data.id,
-                name: response.data.name,
-                phone: response.data.phone,
-                // socketID: response.data.socketID
-            }
-
-            dispatch({ type: GET_USER_SUCCESS, payload });
-            return Promise.resolve();
-        }).catch((err) => {
-            dispatch({ type: GET_USER_FAILED });
-            return Promise.reject();
-        })
-    }
-};
-
-export function getOtherUsersAction(id) {
+export function getConverationsAction(id) {
     // console.log("GetOtherUsersAction-id:- ", id);
     return (dispatch) => {
-        return getOtherUsers(id).then((response) => {
-            console.log("GetOtherUsers-response:- ", response.data);
+        return getConversation(id).then((response) => {
+            console.log("GetConversation-response:- ", response.data);
             let payload = response.data
-            dispatch({ type: GET_OTHER_USERS_SUCCESS, payload });
+            dispatch({ type: GET_CONVERSATION_SUCCESS, payload });
             return Promise.resolve();
         }).catch((err) => {
-            dispatch({ type: GET_OTHER_USERS_FAILED });
+            dispatch({ type: GET_CONVERSATION_FAILED });
             return Promise.reject();
         })
     }
@@ -55,12 +31,3 @@ export function getOldMessagesAction(id1, id2) {
         })
     }
 }
-
-export function addMessage(receivedMsg) {
-    // console.log("SetMessages:- ", msg);
-    return (dispatch) => {
-        dispatch({ type: ADD_MESSAGE, payload: receivedMsg })
-    }
-}
-
-

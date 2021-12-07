@@ -1,12 +1,14 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline';
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import ChatSection from './ChatSection';
-import { getUserAction, getOtherUsersAction, } from "../actions/chat.action";
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { BellIcon, MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline';
+
+import { ChatSection, Conversation } from '../components';
+import { getUserAction, getConverationsAction } from "../actions/chat.action";
 import { logoutAction } from "../actions/auth.action";
+import { searchOthers, createConversation } from "../services/chat";
 import socket from '../services/socket';
 
 function classNames(...classes) {
@@ -14,45 +16,70 @@ function classNames(...classes) {
 }
 
 const Dashboard = () => {
+    const [currentChat, setCurrentChat] = useState(null);
+    const [search, setSearch] = useState("");
+    const [others, setOthers] = useState([]);
     const history = useHistory();
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
     const dispatch = useDispatch();
 
+    // check user is logged in or not on first render
     useEffect(() => {
         if (!authState.isLoggedIn) {
             history.push("/");
         }
 
-        dispatch(getOtherUsersAction(authState.user.id)).then(() => {
-            console.log("Other users fetched");
-        }).catch((err) => {
-            console.log("Other users fetched failed");
-        });
-
-        let lastChatUser = JSON.parse(localStorage.getItem("lastChatUser"))
-        getUserDetails(lastChatUser?.id)
-
         return () => socket.disconnect();
     }, []);
 
-    const getUserDetails = (id) => {
-        // dispatch(getOldMessagesAction(authState.user.id, id));
-        dispatch(getUserAction(id)).then(() => {
-            console.log("Get user details success");
-        }).catch(() => {
-            console.log("Get user details failed");
+    // Fetching conversations
+    useEffect(() => {
+        dispatch(getConverationsAction(authState.user?.id)).then(() => {
+            console.log("Conversations fetched");
+        }).catch((err) => {
+            console.log("Conversations fetched failed");
         });
-    }
+    }, [authState.user?.id]);
 
-    const onChatUserSelect = (id) => {
-        localStorage.setItem("lastChatUser", JSON.stringify({ id }))
-        getUserDetails(id)
-    }
-
+    // Logout handler
     const logoutHandler = () => {
         dispatch(logoutAction());
         history.push("/");
+    }
+
+    // on change submit handler or search box
+    const searchOnChangeHandler = async (e) => {
+        // console.log("SearchOnChangeHandler:- ", e.target.value);
+        setSearch(e.target.value);
+        await searchOthers(authState.user.id, e.target.value).then((response) => {
+            // console.log("SearchOthers-res", response.data);
+            setOthers(response.data);
+        }).catch((err) => {
+            console.log("SearchOthers-err:- ", err.response);
+        })
+    }
+
+    // Creating new Conversation
+    const createNewConversationHandler = async (othersId) => {
+        // console.log("createNewConversationHandler-id:- ", othersId);
+        let data = {
+            id1: `${authState.user?.id}`,
+            id2: `${othersId}`
+        }
+        await createConversation(data).then((res) => {
+            console.log("createConversation-res:- ", res.data);
+            dispatch(getConverationsAction(authState.user?.id)).then(() => {
+                console.log("Conversations fetched");
+                setCurrentChat(res.data);
+                setOthers([]);
+                setSearch("");
+            }).catch((err) => {
+                console.log("Conversations fetched failed");
+            });
+        }).catch((err) => {
+            console.log("createConversation-err:- ", err);
+        })
     }
 
     return (
@@ -108,21 +135,6 @@ const Dashboard = () => {
                                                     leaveTo="transform opacity-0 scale-95"
                                                 >
                                                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                        {/* {userNavigation.map((item) => (
-                                                            <Menu.Item key={item.name}>
-                                                                {({ active }) => (
-                                                                    <a
-                                                                        href={item.href}
-                                                                        className={classNames(
-                                                                            active ? 'bg-gray-100' : '',
-                                                                            'block px-4 py-2 text-sm text-gray-700'
-                                                                        )}
-                                                                    >
-                                                                        {item.name}
-                                                                    </a>
-                                                                )}
-                                                            </Menu.Item>
-                                                        ))} */}
                                                         <Menu.Item>
                                                             {({ active }) => (
                                                                 <a
@@ -244,23 +256,38 @@ const Dashboard = () => {
                         {/* left sidebar */}
                         <div className='w-72 bg-gray-800'>
                             <div className='h-full flex flex-col'>
-                                <div className="pt-0 mx-1 mb-4">
+                                <div className="pt-0 mx-1 mb-4 relative">
                                     <input
                                         type="text"
-                                        placeholder="Search name or group"
-                                        className="px-3 py-2 placeholder-gray-300 text-white bg-gray-600 relative rounded text-md border-0 outline-none focus:outline-none w-full" />
+                                        placeholder="Search name or phone"
+                                        className="px-3 py-2 placeholder-gray-300 text-white bg-gray-600 relative rounded text-md border-0 outline-none focus:outline-none w-full"
+                                        value={search}
+                                        onChange={searchOnChangeHandler} />
+                                    <div className='bg-gray-100 absolute w-full'>
+                                        {
+                                            others.map((oth) => (
+                                                <div
+                                                    key={oth?.id}
+                                                    className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
+                                                    onClick={() => createNewConversationHandler(oth?.id)}
+                                                >
+                                                    <div className="flex-shrink-0">
+                                                        <img className="h-8 w-8 rounded-full border border-gray-500" src="/images/user_icon.svg" alt="" />
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <div className="text-sm font-medium leading-none">{oth?.Name}</div>
+                                                        <div className="font-normal leading-none text-gray-500 mt-1" style={{ "fontSize": "0.65rem" }}>{oth?.Phone}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
                                 </div>
                                 <div className=''>
                                     {
-                                        chatState.otherUsers.map((user) => (
-                                            <div key={user.id} onClick={() => onChatUserSelect(user.id)} className="flex items-center p-2 cursor-pointer hover:bg-gray-700">
-                                                <div className="flex-shrink-0">
-                                                    <img className="h-12 w-12 rounded-full border border-gray-300" src="/images/user_icon.svg" alt="" />
-                                                </div>
-                                                <div className="ml-3">
-                                                    <div className="text-base font-medium leading-none text-white">{user.Name}</div>
-                                                    <div className="text-sm font-normal leading-none text-gray-400 mt-1.5">{user.Phone}</div>
-                                                </div>
+                                        chatState.conversations.map((conv) => (
+                                            <div key={conv.id} onClick={() => setCurrentChat(conv)}>
+                                                <Conversation conversation={conv} currentChat={currentChat} />
                                             </div>
                                         ))
                                     }
@@ -269,11 +296,11 @@ const Dashboard = () => {
                         </div>
                         {/* right sidebar */}
                         <div className='flex-grow'>
-                            <ChatSection user={chatState.chatUser} />
+                            <ChatSection currentChat={currentChat} />
                         </div>
                     </div>
-                </main>
-            </div>
+                </main >
+            </div >
         </>
     )
 }

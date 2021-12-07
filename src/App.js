@@ -1,12 +1,13 @@
-import { Dashboard, Login, Message, Register } from './components';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Switch, Route, useHistory } from "react-router-dom";
-import { useEffect } from 'react';
+import { toast, ToastContainer } from "react-toastify";
+import Loader from "react-loader-spinner";
+
+import { Dashboard, Login, Register } from './pages';
 import socket from "./services/socket";
 import { setConnection } from "./services/chat";
-import { toast, ToastContainer } from "react-toastify";
 import { connectionFailAction, connectionSuccessAction } from "./actions/auth.action";
-import Loader from "react-loader-spinner";
 
 const toastOptions = {
   position: "top-right",
@@ -23,7 +24,7 @@ function App() {
   const history = useHistory();
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  console.log("App.js-authState:- ", authState)
+  // console.log("App.js-authState:- ", authState);
 
   useEffect(() => {
     if (authState.isLoggedIn) {

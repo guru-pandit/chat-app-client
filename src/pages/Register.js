@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { registerAction } from "../../actions/auth.action";
+import { registerAction } from "../actions/auth.action";
 import { Link } from "react-router-dom";
 
 const Register = () => {
@@ -24,7 +24,7 @@ const Register = () => {
                 <div className='mb-2'>
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                        src="/images/logo.svg"
                         alt="Workflow"
                     />
                     <h2 className="mt-3 text-center text-3xl font-bold text-gray-900">Create an Account</h2>

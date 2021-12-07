@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import axios from "../../services/axios";
+import axios from "../services/axios";
 
 const Message = () => {
     const authState = useSelector((state) => state.auth);
