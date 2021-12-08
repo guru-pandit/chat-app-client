@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 import moment from "moment";
 
 import socket from "../services/socket";
 import { fetchMessages, getUser, updateMessage } from "../services/chat";
+import { setMessagesAction } from "../actions/chat.action";
 
 const ChatSection = ({ currentChat }) => {
     const [message, setMessage] = useState("");
-    const [messages, setMessages] = useState([]);
+    // const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [user, setUser] = useState(null);
     // ref to the dummy div
@@ -16,6 +17,8 @@ const ChatSection = ({ currentChat }) => {
 
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
+    const chatState = useSelector((state) => state.chat);
+    const dispatch = useDispatch();
 
     // Follwing method runs if currentChat update
     useEffect(() => {
@@ -44,11 +47,11 @@ const ChatSection = ({ currentChat }) => {
     useEffect(() => {
         fetchMessages(currentChat?.id).then((response) => {
             // console.log("FetchMessages:- ", response.data);
-            setMessages(response.data);
+            dispatch(setMessagesAction(response.data));
         }).catch((err) => {
             if (err.response.status == 400) {
                 console.log("FetchMessages-err:- ", err.response?.data.error);
-                setMessages([]);
+                dispatch(setMessagesAction([]));
             }
         })
     }, [currentChat]);
@@ -70,13 +73,13 @@ const ChatSection = ({ currentChat }) => {
 
     // adding arrival message to the messages array
     useEffect(() => {
-        arrivalMessage && currentChat?.Members.includes(arrivalMessage.SenderID.toString()) && setMessages([...messages, arrivalMessage])
+        arrivalMessage && currentChat?.Members.includes(arrivalMessage.SenderID.toString()) && dispatch(setMessagesAction([...chatState.messages, arrivalMessage]))
     }, [arrivalMessage, currentChat])
 
     // make chat box always scroll down
     useEffect(() => {
         messageEndRef.current.scrollIntoView()
-    }, [messages])
+    }, [chatState.messages])
 
     // Message sumbit handler
     const onSubmitHandler = (e) => {
@@ -91,7 +94,7 @@ const ChatSection = ({ currentChat }) => {
 
         // emiting socket event for private message and then adding message the array
         socket.emit("private message", sendingMessage);
-        setMessages([...messages, sendingMessage])
+        dispatch(setMessagesAction([...chatState.messages, sendingMessage]));
         setMessage("");
     }
 
@@ -124,7 +127,7 @@ const ChatSection = ({ currentChat }) => {
             <div className='flex-grow'>
                 <div className="h-full w-full overflow-y-auto flex flex-col justify-end px-3 my-3" style={{ "maxHeight": "440px" }} >
                     {
-                        messages?.map((msg, i) => (
+                        chatState.messages?.map((msg, i) => (
                             msg.SenderID == authState.user.id ? (
                                 <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
                                     <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>

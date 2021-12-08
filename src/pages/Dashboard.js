@@ -6,7 +6,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 
 import { ChatSection, Conversation } from '../components';
-import { getConverationsAction } from "../actions/chat.action";
+import { getConverationsAction, setCurrentChatAction } from "../actions/chat.action";
 import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
 import { searchOthers, createConversation, setConnection } from "../services/chat";
 import socket from '../services/socket';
@@ -17,7 +17,7 @@ function classNames(...classes) {
 
 const Dashboard = () => {
     const history = useHistory();
-    const [currentChat, setCurrentChat] = useState(null);
+    // const [currentChat, setCurrentChat] = useState(null);
     const [search, setSearch] = useState("");
     const [others, setOthers] = useState([]);
 
@@ -35,7 +35,7 @@ const Dashboard = () => {
             // on connect listener
             socket.on("connect", () => {
                 console.log("Connected:- ", socket.id);
-                setConnection(authState.user.id, socket.id).then((response) => {
+                setConnection(authState.user?.id, socket.id).then((response) => {
                     // console.log("Connected-Response:- ", response.data);
                     dispatch(connectionSuccessAction())
                 }).catch((err) => {
@@ -76,7 +76,7 @@ const Dashboard = () => {
     const searchOnChangeHandler = async (e) => {
         // console.log("SearchOnChangeHandler:- ", e.target.value);
         setSearch(e.target.value);
-        await searchOthers(authState.user.id, e.target.value).then((response) => {
+        await searchOthers(authState.user?.id, e.target.value).then((response) => {
             // console.log("SearchOthers-res", response.data);
             setOthers(response.data);
         }).catch((err) => {
@@ -94,8 +94,8 @@ const Dashboard = () => {
         await createConversation(data).then((res) => {
             console.log("createConversation-res:- ", res.data);
             dispatch(getConverationsAction(authState.user?.id)).then(() => {
-                console.log("Conversations fetched");
-                setCurrentChat(res.data);
+                // console.log("Conversations fetched");
+                dispatch(setCurrentChatAction(res.data));
                 setOthers([]);
                 setSearch("");
             }).catch((err) => {
@@ -310,8 +310,8 @@ const Dashboard = () => {
                                 <div className=''>
                                     {
                                         chatState.conversations.map((conv) => (
-                                            <div key={conv.id} onClick={() => setCurrentChat(conv)}>
-                                                <Conversation conversation={conv} currentChat={currentChat} />
+                                            <div key={conv.id} onClick={() => dispatch(setCurrentChatAction(conv))}>
+                                                <Conversation conversation={conv} currentChat={chatState.currentChat} />
                                             </div>
                                         ))
                                     }
@@ -320,7 +320,7 @@ const Dashboard = () => {
                         </div>
                         {/* right sidebar */}
                         <div className='flex-grow'>
-                            <ChatSection currentChat={currentChat} />
+                            <ChatSection currentChat={chatState.currentChat} />
                         </div>
                     </div>
                 </main >

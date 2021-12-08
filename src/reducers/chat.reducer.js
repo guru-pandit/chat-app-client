@@ -1,17 +1,18 @@
-import { GET_OLD_MESSAGES_SUCCESS, GET_OLD_MESSAGES_FAILED, GET_CONVERSATION_SUCCESS, GET_CONVERSATION_FAILED, } from "../actions/chat.action";
+import { GET_CONVERSATION_SUCCESS, GET_CONVERSATION_FAILED, SET_CURRENT_CHAT_USER, SET_MESSAGES_FOR_CURRENT_CHAT_USER } from "../actions/chat.action";
 
 const initialState = {
     searchedUsers: [],
+    currentChat: null,
     messages: [],
     conversations: []
 }
 
 const chatReducer = (state = initialState, action) => {
     let { type, payload } = action;
+    // console.log("ChatReducer-action:-" + type + "-:payload:-" + payload);
 
     switch (type) {
         case GET_CONVERSATION_SUCCESS:
-            // console.log("GET_CONVERSATION_SUCCESS-payload ", payload);
             return {
                 ...state,
                 conversations: [...payload]
@@ -19,16 +20,17 @@ const chatReducer = (state = initialState, action) => {
         case GET_CONVERSATION_FAILED:
             return {
                 ...state,
+                conversations: []
             }
-        case GET_OLD_MESSAGES_SUCCESS:
-            // console.log("GET_OLD_MESSAGE_SUCCESS-payload", payload);
+        case SET_CURRENT_CHAT_USER:
             return {
                 ...state,
-                messages: [...payload]
+                currentChat: payload
             }
-        case GET_OLD_MESSAGES_FAILED:
+        case SET_MESSAGES_FOR_CURRENT_CHAT_USER:
             return {
                 ...state,
+                messages: payload
             }
         default:
             return state;

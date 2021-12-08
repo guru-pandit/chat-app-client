@@ -8,6 +8,7 @@ const initialState = user
 
 const authReducer = (state = initialState, action) => {
     let { type, payload } = action;
+    // console.log("AuthReducer-action:-" + type + "-:payload:-" + payload);
 
     switch (type) {
         case CONNECTION_SUCCESS:
@@ -31,7 +32,6 @@ const authReducer = (state = initialState, action) => {
                 isLoggedIn: false
             }
         case LOGIN_SUCCESS:
-            // console.log("Login-Success:Payload:- ", payload);
             return {
                 ...state,
                 isLoggedIn: true,
