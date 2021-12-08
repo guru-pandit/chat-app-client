@@ -40,33 +40,6 @@ const ChatSection = ({ currentChat }) => {
                 console.log("MessageUpdated-err:- ", err);
             })
         })
-    }, [])
-
-    // Fetching friends details
-    useEffect(() => {
-        // console.log("CurrentChat:- ", currentChat);
-        const friendsID = currentChat?.Members?.find((f) => f != authState.user.id);
-        // console.log("friendsID:- ", friendsID);
-
-        getUser(friendsID).then((response) => {
-            // console.log("GetUser-res", response.data);
-            setUser(response.data);
-        }).catch((err) => {
-            console.log("GetUser-err:- ", err.response?.data.error);
-        })
-    }, [currentChat, authState.user.id]);
-
-    // Fetching messages
-    useEffect(() => {
-        fetchMessages(currentChat?.id).then((response) => {
-            // console.log("FetchMessages:- ", response.data);
-            dispatch(setMessagesAction(response.data));
-        }).catch((err) => {
-            if (err.response.status == 400) {
-                console.log("FetchMessages-err:- ", err.response?.data.error);
-                dispatch(setMessagesAction([]));
-            }
-        })
 
         // message received by receiver event listener
         socket.on("receiver received private message", (msg) => {
@@ -84,6 +57,32 @@ const ChatSection = ({ currentChat }) => {
                 fetchMessages(currentChat?.id).then((response) => {
                     dispatch(setMessagesAction(response.data));
                 })
+            }
+        })
+    }, [])
+
+    // Fetching friends details
+    useEffect(() => {
+        // console.log("CurrentChat:- ", currentChat);
+        const friendsID = currentChat?.Members?.find((f) => f != authState.user.id);
+        // console.log("friendsID:- ", friendsID);
+        getUser(friendsID).then((response) => {
+            // console.log("GetUser-res", response.data);
+            setUser(response.data);
+        }).catch((err) => {
+            console.log("GetUser-err:- ", err.response?.data.error);
+        })
+    }, [currentChat, authState.user.id]);
+
+    // Fetching messages
+    useEffect(() => {
+        fetchMessages(currentChat?.id).then((response) => {
+            // console.log("FetchMessages:- ", response.data);
+            dispatch(setMessagesAction(response.data));
+        }).catch((err) => {
+            if (err.response.status == 400) {
+                console.log("FetchMessages-err:- ", err.response?.data.error);
+                dispatch(setMessagesAction([]));
             }
         })
     }, [currentChat]);
@@ -114,7 +113,7 @@ const ChatSection = ({ currentChat }) => {
         <div className='w-full h-full flex flex-col'>
             {/* receiver */}
             <div>
-                <ChatUser user={user} />
+                {user && <ChatUser user={user} />}
             </div>
             {/* messages */}
             <div className='flex-grow'>

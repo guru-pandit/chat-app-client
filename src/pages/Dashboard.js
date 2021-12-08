@@ -320,7 +320,7 @@ const Dashboard = () => {
                         </div>
                         {/* right sidebar */}
                         <div className='flex-grow'>
-                            <ChatSection currentChat={chatState.currentChat} />
+                            {chatState.currentChat && <ChatSection currentChat={chatState.currentChat} />}
                         </div>
                     </div>
                 </main >
