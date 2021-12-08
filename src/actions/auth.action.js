@@ -19,9 +19,9 @@ export function registerAction(name, phone, password) {
             dispatch({ type: REGISTER_SUCCESS });
             return Promise.resolve();
         }).catch((err) => {
-            console.log("RegisterAction-err", err.response.data.error);
+            console.log("RegisterAction-err", err.response?.data.error);
             dispatch(loaderToggleAction(false));
-            toast.error(err.response.data.error);
+            toast.error(err.response?.data.error);
             dispatch({ type: REGISTER_FAIL });
             return Promise.reject();
         })
@@ -40,8 +40,8 @@ export function loginAction(phone, password) {
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
             return Promise.resolve();
         }).catch((err) => {
-            console.log("LoginAction-err", err.response.data.error);
-            toast.error(err.response.data.error);
+            console.log("LoginAction-err", err.response?.data.error);
+            toast.error(err.response?.data.error);
             dispatch(loaderToggleAction(false));
             dispatch({ type: LOGIN_FAIL });
             return Promise.reject();

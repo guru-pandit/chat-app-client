@@ -47,7 +47,7 @@ const ChatSection = ({ currentChat }) => {
             setMessages(response.data);
         }).catch((err) => {
             if (err.response.status == 400) {
-                console.log("FetchMessages-err:- ", err.response.data.error);
+                console.log("FetchMessages-err:- ", err.response?.data.error);
                 setMessages([]);
             }
         })
@@ -92,6 +92,7 @@ const ChatSection = ({ currentChat }) => {
         // emiting socket event for private message and then adding message the array
         socket.emit("private message", sendingMessage);
         setMessages([...messages, sendingMessage])
+        setMessage("");
     }
 
     return (
@@ -105,7 +106,11 @@ const ChatSection = ({ currentChat }) => {
                     <div className="flex-grow ml-3">
                         <div className="text-base font-semibold leading-none text-gray-900">{user?.Name}
                             {
-                                user?.ConnectionDetail.IsConnected ? <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full ">  </span> : null
+                                user?.ConnectionDetail.IsConnected ? (
+                                    <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full">  </span>
+                                ) : (
+                                    <span className="p-px ml-3 inline-block text-xs text-gray-500 font-medium">{moment.utc(user?.ConnectionDetail.DisconnectedAt).fromNow()}</span>
+                                )
                             }
                         </div>
                         <div className="text-sm font-normal leading-none text-gray-600 mt-1.5">{user?.Phone}</div>
