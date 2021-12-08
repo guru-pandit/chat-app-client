@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PaperAirplaneIcon } from "@heroicons/react/solid";
 
 import socket from "../services/socket";
 import { fetchMessages, getUser, updateMessage } from "../services/chat";
 import { setMessagesAction } from "../actions/chat.action";
-import { Message } from "../components";
 import ChatUser from "./ChatUser";
+import Message from './Message';
 
 const ChatSection = ({ currentChat }) => {
     const [message, setMessage] = useState("");
@@ -27,6 +27,21 @@ const ChatSection = ({ currentChat }) => {
         console.log("User:- ", user);
     }, [user])
 
+    // Checking arriving message
+    useEffect(() => {
+        // Listnening for private message
+        socket.on("private message", (msg) => {
+            console.log("Received message:- ", msg);
+            setArrivalMessage(msg)
+            // sending received time to backend
+            updateMessage(msg.id, { MessageReceivedAt: Date.now(), IsReceived: true, IsRead: true, ConversationID: msg.ConversationID, SenderID: msg.SenderID }).then((response) => {
+                // console.log("MessageUpdated", response.data);
+            }).catch((err) => {
+                console.log("MessageUpdated-err:- ", err);
+            })
+        })
+    }, [])
+
     // Fetching friends details
     useEffect(() => {
         // console.log("CurrentChat:- ", currentChat);
@@ -37,7 +52,7 @@ const ChatSection = ({ currentChat }) => {
             // console.log("GetUser-res", response.data);
             setUser(response.data);
         }).catch((err) => {
-            console.log("GetUser-err:- ", err);
+            console.log("GetUser-err:- ", err.response?.data.error);
         })
     }, [currentChat, authState.user.id]);
 
@@ -52,22 +67,26 @@ const ChatSection = ({ currentChat }) => {
                 dispatch(setMessagesAction([]));
             }
         })
-    }, [currentChat]);
 
-    // Checking arriving message
-    useEffect(() => {
-        // Listnening for private message
-        socket.once("private message", (msg) => {
-            console.log("Received message:- ", msg);
-            setArrivalMessage(msg)
-            // sending received time to backend
-            updateMessage(msg.id, { MessageReceivedAt: Date.now() }).then((response) => {
-                // console.log("MessageUpdated", response.data);
-            }).catch((err) => {
-                console.log("MessageUpdated-err:- ", err);
-            })
+        // message received by receiver event listener
+        socket.on("receiver received private message", (msg) => {
+            if (msg.ConversationID == currentChat?.id) {
+                fetchMessages(currentChat?.id).then((response) => {
+                    dispatch(setMessagesAction(response.data));
+                })
+            }
         })
-    }, [])
+
+        // Message receieved by server event listener
+        socket.on("server received private message", (msg) => {
+            // console.log("ServerReceivedPrivateMessage:- ", msg);
+            if (msg.ConversationID == currentChat?.id) {
+                fetchMessages(currentChat?.id).then((response) => {
+                    dispatch(setMessagesAction(response.data));
+                })
+            }
+        })
+    }, [currentChat]);
 
     // adding arrival message to the messages array
     useEffect(() => {

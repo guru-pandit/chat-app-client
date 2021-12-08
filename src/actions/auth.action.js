@@ -14,7 +14,7 @@ export function registerAction(name, phone, password) {
     // console.log("Register:Action:- ", name + " " + phone + " " + password);
     return (dispatch) => {
         return register(name, phone, password).then((response) => {
-            console.log("RegisterAPI-Response:-", response);
+            // console.log("RegisterAPI-Response:-", response);
             dispatch(loaderToggleAction(false));
             dispatch({ type: REGISTER_SUCCESS });
             return Promise.resolve();
@@ -32,7 +32,7 @@ export function loginAction(phone, password) {
     // console.log("Login:Action:- ", + phone + " " + password);
     return (dispatch) => {
         return login(phone, password).then((response) => {
-            console.log("LoginAPI-Response.data:-", response.data);
+            // console.log("LoginAPI-Response.data:-", response.data);
             if (response.data.authToken) {
                 localStorage.setItem("user", JSON.stringify(response.data));
             }
