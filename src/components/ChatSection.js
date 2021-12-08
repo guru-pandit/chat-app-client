@@ -1,19 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PaperAirplaneIcon, DotsVerticalIcon } from "@heroicons/react/solid";
-import moment from "moment";
+import { PaperAirplaneIcon } from "@heroicons/react/solid";
 
 import socket from "../services/socket";
 import { fetchMessages, getUser, updateMessage } from "../services/chat";
 import { setMessagesAction } from "../actions/chat.action";
+import { Message } from "../components";
+import ChatUser from "./ChatUser";
 
 const ChatSection = ({ currentChat }) => {
     const [message, setMessage] = useState("");
-    // const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [user, setUser] = useState(null);
-    // ref to the dummy div
-    const messageEndRef = useRef();
 
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
@@ -76,11 +74,6 @@ const ChatSection = ({ currentChat }) => {
         arrivalMessage && currentChat?.Members.includes(arrivalMessage.SenderID.toString()) && dispatch(setMessagesAction([...chatState.messages, arrivalMessage]))
     }, [arrivalMessage, currentChat])
 
-    // make chat box always scroll down
-    useEffect(() => {
-        messageEndRef.current.scrollIntoView()
-    }, [chatState.messages])
-
     // Message sumbit handler
     const onSubmitHandler = (e) => {
         e.preventDefault()
@@ -101,48 +94,12 @@ const ChatSection = ({ currentChat }) => {
     return (
         <div className='w-full h-full flex flex-col'>
             {/* receiver */}
-            <div className=''>
-                <div className="flex items-center p-2 bg-gray-200">
-                    <div className="flex-shrink-0">
-                        <img className="h-12 w-12 rounded-full border border-gray-500" src="/images/user_icon.svg" alt="" />
-                    </div>
-                    <div className="flex-grow ml-3">
-                        <div className="text-base font-semibold leading-none text-gray-900">{user?.Name}
-                            {
-                                user?.ConnectionDetail.IsConnected ? (
-                                    <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full">  </span>
-                                ) : (
-                                    <span className="p-px ml-3 inline-block text-xs text-gray-500 font-medium">{moment.utc(user?.ConnectionDetail.DisconnectedAt).fromNow()}</span>
-                                )
-                            }
-                        </div>
-                        <div className="text-sm font-normal leading-none text-gray-600 mt-1.5">{user?.Phone}</div>
-                    </div>
-                    <div className="mx-4 cursor-pointer">
-                        <DotsVerticalIcon className="h-5 w-5 text-lg text-gray-600" />
-                    </div>
-                </div>
+            <div>
+                <ChatUser user={user} />
             </div>
             {/* messages */}
             <div className='flex-grow'>
-                <div className="h-full w-full overflow-y-auto flex flex-col justify-end px-3 my-3" style={{ "maxHeight": "440px" }} >
-                    {
-                        chatState.messages?.map((msg, i) => (
-                            msg.SenderID == authState.user.id ? (
-                                <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
-                                    <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
-                                    <span className="text-right font-normal text-gray-400" style={{ "fontSize": ".7rem" }}>{moment.utc(msg.MessageSentAt).local().format('LT')}</span>
-                                </div>
-                            ) : (
-                                <div key={i} className="flex flex-col self-start max-w-xs bg-indigo-50 mb-2 px-3 py-1 rounded-2xl rounded-bl-none shadow-sm">
-                                    <span className="text-base text-left text-medium text-gray-900">{msg.Body}</span>
-                                    <span className="text-left font-normal text-gray-400" style={{ "fontSize": ".7rem" }}>{moment.utc(msg.MessageSentAt).local().format('LT')}</span>
-                                </div>
-                            )
-                        ))
-                    }
-                    <div ref={messageEndRef} />
-                </div>
+                <Message messages={chatState.messages} />
             </div>
             <div className=''>
                 <form className="bg-white px-5" onSubmit={onSubmitHandler}>
