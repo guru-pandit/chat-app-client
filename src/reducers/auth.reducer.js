@@ -42,12 +42,12 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 isLoggedIn: false
             }
-        case LOGOUT_SUCCESS:
-            return {
-                ...state,
-                isLoggedIn: false,
-                user: null
-            }
+        // case LOGOUT_SUCCESS:
+        //     return {
+        //         ...state,
+        //         isLoggedIn: false,
+        //         user: null
+        //     }
         default:
             return state;
     }
