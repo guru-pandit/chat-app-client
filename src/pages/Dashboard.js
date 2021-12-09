@@ -146,7 +146,7 @@ const Dashboard = () => {
                                                 <div>
                                                     <Menu.Button className="max-w-xs bg-gray-300 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                                         <span className="sr-only">Open user menu</span>
-                                                        <img className="h-8 w-8 rounded-full" src="/images/user_icon.svg" alt="" />
+                                                        <img className="h-8 w-8 rounded-full" src={authState.user.Avatar} alt="" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition
@@ -161,28 +161,26 @@ const Dashboard = () => {
                                                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <a
-                                                                    href="#"
+                                                                <button
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                        'block px-4 py-2 text-sm text-gray-700 w-full text-left'
                                                                     )}
                                                                 >
                                                                     Your profile
-                                                                </a>
+                                                                </button>
                                                             )}
                                                         </Menu.Item>
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <a
-                                                                    href="#"
+                                                                <button
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                        'block px-4 py-2 text-sm text-gray-700 w-full text-left'
                                                                     )}
                                                                 >
                                                                     Settings
-                                                                </a>
+                                                                </button>
                                                             )}
                                                         </Menu.Item>
                                                         <Menu.Item>
@@ -217,7 +215,8 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            <Disclosure.Panel className="md:hidden">
+                            {/* <Disclosure.Panel className="md:hidden"> */}
+                            <Disclosure.Panel className="hidden">
                                 {/* <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border border-red-500"></div> */}
                                 <div className="pt-4 pb-3 border-t border-gray-700">
                                     <div className="flex items-center px-5">

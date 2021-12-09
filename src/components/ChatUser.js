@@ -6,7 +6,7 @@ const ChatUser = ({ user }) => {
         <>
             <div className="flex items-center p-2 bg-gray-200">
                 <div className="flex-shrink-0">
-                    <img className="h-12 w-12 rounded-full border border-gray-500" src="/images/user_icon.svg" alt="" />
+                    <img className="h-12 w-12 rounded-full border border-gray-500" src={user?.Avatar} alt="" />
                 </div>
                 <div className="flex-grow ml-3">
                     <div className="text-base font-semibold leading-none text-gray-900">{user?.Name}

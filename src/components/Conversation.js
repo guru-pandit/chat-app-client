@@ -9,6 +9,9 @@ const Conversation = ({ conversation, currentChat }) => {
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
 
+    useEffect(() => {
+        console.log("Conversation-user:- ", user)
+    }, [user])
     // following method runs when conversation update
     useEffect(() => {
         const friendsID = conversation?.Members?.find((f) => f != authState.user.id);
@@ -27,7 +30,7 @@ const Conversation = ({ conversation, currentChat }) => {
         <>
             <div key={user?.id} className="flex items-center p-2 cursor-pointer hover:bg-gray-700" >
                 <div className="flex-shrink-0">
-                    <img className="h-12 w-12 rounded-full border border-gray-300" src="/images/user_icon.svg" alt="" />
+                    <img className="h-12 w-12 rounded-full border border-gray-300" src={user?.Avatar} alt="" />
                 </div>
                 <div className="ml-3">
                     <div className="text-base font-medium leading-none text-white">{user?.Name}
