@@ -2,13 +2,19 @@ import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCC
 
 const user = JSON.parse(localStorage.getItem("user"));
 
-const initialState = user
-    ? { isLoggedIn: true, user, isConnected: false }
-    : { isLoggedIn: false, user: null, isConnected: false };
+const initialState = {
+    isLoggedIn: false,
+    user: {
+        id: null,
+        Name: null,
+        Phone: null,
+        Avatar: null
+    },
+    isConnected: false
+};
 
 const authReducer = (state = initialState, action) => {
     let { type, payload } = action;
-    // console.log("AuthReducer-action:-" + type + "-:payload:-" + payload);
 
     switch (type) {
         case CONNECTION_SUCCESS:
@@ -35,19 +41,13 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                user: payload
+                user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Avatar: payload.Avatar },
             }
         case LOGIN_FAIL:
             return {
                 ...state,
                 isLoggedIn: false
             }
-        // case LOGOUT_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoggedIn: false,
-        //         user: null
-        //     }
         default:
             return state;
     }

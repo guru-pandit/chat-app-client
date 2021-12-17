@@ -15,7 +15,6 @@ const allReducers = combineReducers({
 // resetting the state of redux store
 const rootReducer = (state, action) => {
     if (action.type === LOGOUT_SUCCESS) {
-        localStorage.removeItem("user");
         state = undefined
     }
     return allReducers(state, action);

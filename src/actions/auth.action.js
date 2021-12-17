@@ -1,4 +1,4 @@
-import { login, register } from "../services/auth";
+import { login, register, logout } from "../services/auth";
 import { loaderToggleAction } from "./common.action";
 import { toast } from "react-toastify";
 
@@ -33,17 +33,23 @@ export function loginAction(phone, password) {
     return (dispatch) => {
         return login(phone, password).then((response) => {
             // console.log("LoginAPI-Response.data:-", response.data);
+
             if (response.data.authToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
+                localStorage.setItem("authToken", response.data.authToken);
             }
+
             dispatch(loaderToggleAction(false));
             dispatch({ type: LOGIN_SUCCESS, payload: response.data });
+
             return Promise.resolve();
         }).catch((err) => {
             console.log("LoginAction-err", err.response?.data.error);
+
             toast.error(err.response?.data.error);
+
             dispatch(loaderToggleAction(false));
             dispatch({ type: LOGIN_FAIL });
+
             return Promise.reject();
         })
     }
@@ -52,8 +58,16 @@ export function loginAction(phone, password) {
 export function logoutAction() {
     // console.log("Logout-Action");
     return (dispatch) => {
-        // localStorage.removeItem("user");
-        return dispatch({ type: LOGOUT_SUCCESS });
+        logout().then((response) => {
+            // console.log("LogoutAction-res:- ", response);
+            localStorage.removeItem("authToken");
+            dispatch({ type: LOGOUT_SUCCESS });
+            dispatch(loaderToggleAction(false));
+        }).catch((err) => {
+            console.log("LoginAction-err", err.response?.data.error);
+            dispatch(loaderToggleAction(false));
+            toast.error(err.response?.data.error);
+        })
     }
 };
 

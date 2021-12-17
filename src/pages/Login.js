@@ -24,7 +24,6 @@ const Login = () => {
 
     // Login form submit handler
     const onSubmitHandler = (data) => {
-        console.log("LoginOnSubmitHandler:- ", data);
         dispatch(loaderToggleAction(true));
         dispatch(loginAction(data.phone, data.password)).then(() => {
             history.push("/dashboard");

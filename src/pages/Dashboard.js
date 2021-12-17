@@ -9,6 +9,7 @@ import { ChatSection, Conversation } from '../components';
 import { getConverationsAction, setCurrentChatAction } from "../actions/chat.action";
 import { connectionFailAction, connectionSuccessAction, logoutAction } from "../actions/auth.action";
 import { searchOthers, createConversation, setConnection } from "../services/chat";
+import { loaderToggleAction } from '../actions/common.action';
 import socket from '../services/socket';
 
 function classNames(...classes) {
@@ -68,6 +69,7 @@ const Dashboard = () => {
 
     // Logout handler
     const logoutHandler = () => {
+        dispatch(loaderToggleAction(true));
         dispatch(logoutAction());
         history.push("/");
     }

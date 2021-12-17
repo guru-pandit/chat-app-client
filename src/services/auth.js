@@ -7,3 +7,7 @@ export function register(name, phone, password) {
 export function login(phone, password) {
     return axios.post("/user/login", { Phone: phone, Password: password });
 }
+
+export function logout() {
+    return axios.post("/user/logout");
+}
