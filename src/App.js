@@ -7,14 +7,12 @@ import { Loader } from "./components";
 import Routes from "./Routes";
 import { home } from "./services/auth";
 import { homeAction } from "./actions/auth.action";
-import { loaderToggleAction } from './actions/common.action';
 
 function App() {
   const history = useHistory();
 
   // Redux selector and dispatch
   const dispatch = useDispatch()
-  const authState = useSelector((state) => state.auth);
   const commonState = useSelector((state) => state.common);
 
   // Following method run on first render
