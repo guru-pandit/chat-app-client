@@ -1,5 +1,9 @@
 import axios from './axios';
 
+export function home() {
+    return axios.get("/");
+}
+
 export function register(name, phone, password) {
     return axios.post("/user/register", { Name: name, Phone: phone, Password: password })
 }

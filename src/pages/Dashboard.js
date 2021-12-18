@@ -52,7 +52,7 @@ const Dashboard = () => {
                 dispatch(connectionFailAction());
             });
         } else {
-            history.push("/");
+            history.push("/login");
         }
 
         return () => socket.disconnect();
@@ -71,7 +71,7 @@ const Dashboard = () => {
     const logoutHandler = () => {
         dispatch(loaderToggleAction(true));
         dispatch(logoutAction());
-        history.push("/");
+        history.push("/login");
     }
 
     // on change submit handler or search box

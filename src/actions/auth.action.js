@@ -10,6 +10,13 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
+export function homeAction(data) {
+    return (dispatch) => {
+        return dispatch({ type: LOGIN_SUCCESS, payload: data });
+
+    }
+}
+
 export function registerAction(name, phone, password) {
     // console.log("Register:Action:- ", name + " " + phone + " " + password);
     return (dispatch) => {

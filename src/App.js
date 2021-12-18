@@ -1,25 +1,30 @@
 import { useEffect } from 'react';
-import { useSelector } from "react-redux";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { Dashboard, Login, Register } from './pages';
-import { Loader } from "./components"
+import { Loader } from "./components";
+import Routes from "./Routes";
+import { home } from "./services/auth";
+import { homeAction } from "./actions/auth.action";
+import { loaderToggleAction } from './actions/common.action';
 
 function App() {
   const history = useHistory();
 
   // Redux selector and dispatch
+  const dispatch = useDispatch()
   const authState = useSelector((state) => state.auth);
   const commonState = useSelector((state) => state.common);
 
   // Following method run on first render
   useEffect(() => {
-    if (authState.isLoggedIn) {
+    home().then((res) => {
+      dispatch(homeAction(res.data));
       history.push("/dashboard");
-    } else {
-      history.push("/");
-    }
+    }).catch((err) => {
+      history.push("/login");
+    })
   }, [])
 
   return (
@@ -27,26 +32,7 @@ function App() {
       {
         commonState.showLoader && <Loader />
       }
-      <Switch>
-        {
-          authState.isLoggedIn ? (
-            <>
-              <Route exact path="/dashboard" >
-                <Dashboard />
-              </Route>
-            </>
-          ) : (
-            <>
-              <Route exact path="/">
-                <Login />
-              </Route>
-              <Route exact path="/register">
-                <Register />
-              </Route>
-            </>
-          )
-        }
-      </Switch>
+      <Routes />
       <ToastContainer autoClose={3000} />
     </div>
   );

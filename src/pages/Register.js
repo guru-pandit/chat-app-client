@@ -28,7 +28,7 @@ const Register = () => {
         console.log("RegisterOnSubmitHandler:- ", data);
         dispatch(loaderToggleAction(true));
         dispatch(registerAction(data.name, data.phone, data.password)).then(() => {
-            history.push("/");
+            history.push("/login");
         })
         reset();
     }
@@ -63,7 +63,7 @@ const Register = () => {
                         </div>
                         <div className="flex items-center justify-between">
                             <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Sign up</button>
-                            <Link className="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-800" to='/' >Already have an account?</Link>
+                            <Link className="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-800" to='/login' >Already have an account?</Link>
                         </div>
                     </form>
                 </div>
