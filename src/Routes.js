@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 
-import { Dashboard, Login, Register } from './pages';
+import { Dashboard, Login, Profile, Register } from './pages';
 
 
 const Routes = () => {
@@ -15,6 +15,9 @@ const Routes = () => {
                         <>
                             <Route exact path="/dashboard" >
                                 <Dashboard />
+                            </Route>
+                            <Route exact path="/profile" >
+                                <Profile />
                             </Route>
                         </>
                     ) : (

@@ -4,6 +4,8 @@ import Loader from "./Loader";
 import Message from "./Message";
 import ChatUser from "./ChatUser";
 import MsgStatus from './MsgStatus';
+import Navbar from './Navbar';
+import ImgUpload from './ImgUpload';
 
 export {
     ChatSection,
@@ -11,5 +13,7 @@ export {
     Loader,
     Message,
     ChatUser,
-    MsgStatus
+    MsgStatus,
+    Navbar,
+    ImgUpload
 }

@@ -45,7 +45,7 @@ const Login = () => {
                     </div>
                     <form className="bg-white p-2" onSubmit={handleSubmit(onSubmitHandler)}>
                         <div className="mb-3">
-                            <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="password">Phone</label>
+                            <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="phone">Phone</label>
                             <input type="text" placeholder="Phone" {...register("phone")} className="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                             <p className="text-xs py-px px-2 text-red-600">{errors.phone?.message}</p>
                         </div>

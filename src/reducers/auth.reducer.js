@@ -8,6 +8,7 @@ const initialState = {
         id: null,
         Name: null,
         Phone: null,
+        Email: null,
         Avatar: null
     },
     isConnected: false
@@ -41,7 +42,7 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Avatar: payload.Avatar },
+                user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Email: payload.Email, Avatar: payload.Avatar },
             }
         case LOGIN_FAIL:
             return {
