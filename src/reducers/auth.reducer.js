@@ -1,16 +1,8 @@
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, CONNECTION_SUCCESS, CONNECTION_FAIL } from "../actions/auth.action";
-
-const user = JSON.parse(localStorage.getItem("user"));
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, CONNECTION_SUCCESS, CONNECTION_FAIL } from "../actions/auth.action";
 
 const initialState = {
     isLoggedIn: false,
-    user: {
-        id: null,
-        Name: null,
-        Phone: null,
-        Email: null,
-        Avatar: null
-    },
+    user: { id: null, Name: null, Phone: null, Email: null, DOB: null, Avatar: null },
     isConnected: false
 };
 
@@ -42,7 +34,7 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Email: payload.Email, Avatar: payload.Avatar },
+                user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Email: payload.Email, DOB: payload.DOB, Avatar: payload.Avatar },
             }
         case LOGIN_FAIL:
             return {

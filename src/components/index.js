@@ -6,6 +6,8 @@ import ChatUser from "./ChatUser";
 import MsgStatus from './MsgStatus';
 import Navbar from './Navbar';
 import ImgUpload from './ImgUpload';
+import LoadingBar from './LoadingBar';
+import Button from './Button';
 
 export {
     ChatSection,
@@ -15,5 +17,7 @@ export {
     ChatUser,
     MsgStatus,
     Navbar,
-    ImgUpload
+    ImgUpload,
+    LoadingBar,
+    Button
 }

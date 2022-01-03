@@ -12,6 +12,14 @@ export function login(phone, password) {
     return axios.post("/user/login", { Phone: phone, Password: password });
 }
 
+export function update(id, name, phone, email, dob) {
+    return axios.put("/user/update-profile", { id: id, Name: name, Phone: phone, Email: email, DOB: dob });
+}
+
+export function uploadProfile(id, formdata) {
+    return axios.post(`/user/profile/${id}`, formdata, { headers: { "Content-Type": "multipart/form-data" } });
+}
+
 export function logout() {
     return axios.post("/user/logout");
 }

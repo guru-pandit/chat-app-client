@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { Loader } from "./components";
+import { Container, Loader, LoadingBar, Navbar } from "./components";
 import Routes from "./Routes";
 import { home } from "./services/auth";
 import { homeAction } from "./actions/auth.action";
@@ -30,7 +30,9 @@ function App() {
       {
         commonState.showLoader && <Loader />
       }
-      <Routes />
+      <LoadingBar>
+        <Routes />
+      </LoadingBar>
       <ToastContainer autoClose={3000} />
     </div>
   );

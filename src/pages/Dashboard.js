@@ -47,8 +47,6 @@ const Dashboard = () => {
         } else {
             history.push("/login");
         }
-
-        return () => socket.disconnect();
     }, []);
 
     // Fetching conversations
@@ -90,7 +88,7 @@ const Dashboard = () => {
                 console.log("Conversations fetched failed");
             });
         }).catch((err) => {
-            console.log("createConversation-err:- ", err);
+            console.log("createConversation-err:- ", err.response?.data.error);
         })
     }
 

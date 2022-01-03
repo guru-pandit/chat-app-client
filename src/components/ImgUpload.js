@@ -1,11 +1,16 @@
-import { useSelector, useDispatch } from "react-redux";
-
-import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useRef, useState, useContext } from "react";
 import { UploadIcon } from "@heroicons/react/outline";
+import { toast } from "react-toastify";
+
+import { uploadProfile } from "../services/auth";
+import { LoadingBarContext } from "../components/LoadingBar";
 
 const ImgUpload = () => {
     const uploadedImage = useRef(null);
     const imageUploader = useRef(null);
+    const [submitActive, setSubmitActive] = useState(false);
+    const loadingBarRef = useContext(LoadingBarContext);
 
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
@@ -25,6 +30,24 @@ const ImgUpload = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    const handleSubmit = (e) => {
+        console.log("HandleSubmit:- ", uploadedImage.current.file);
+        loadingBarRef.current.continuousStart();
+        setSubmitActive(true);
+        const formData = new FormData();
+        formData.append("avatar", uploadedImage.current.file);
+
+        uploadProfile(authState.user.id, formData).then((result) => {
+            loadingBarRef.current.complete();
+            toast.success("Profile successfully updated");
+            setSubmitActive(false);
+        }).catch((err) => {
+            loadingBarRef.current.complete();
+            toast.error(err.response?.data.error);
+            setSubmitActive(false);
+        });
+    }
     return (
         <div className="flex flex-col items-center justify-center m-2">
             <div>
@@ -50,7 +73,11 @@ const ImgUpload = () => {
                 </div>
             </div>
             <div>
-                <button class="py-2 px-4 my-3 text-indigo-700 font-bold transition-colors duration-150 border border-indigo-500 rounded focus:shadow-outline hover:bg-indigo-50 hover:text-indigo-900 cursor-not-allowed opacity-50" disabled={true}>Save image</button>
+                <button className="py-2 px-4 my-3 text-indigo-700 font-bold transition-colors duration-150 border border-indigo-500 rounded focus:shadow-outline hover:bg-indigo-50 hover:text-indigo-900"
+                    onClick={(e) => handleSubmit(e)}
+                >
+                    {submitActive ? "Saving..." : "Save image"}
+                </button>
             </div>
         </div >
     );

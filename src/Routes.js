@@ -5,6 +5,7 @@ import { Dashboard, Login, Profile, Register } from './pages';
 
 
 const Routes = () => {
+    // state
     const authState = useSelector((state) => state.auth);
 
     return (

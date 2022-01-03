@@ -1,20 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 
 import { ImgUpload, Navbar } from '../components';
+import { classNames } from '../helpers';
+import { update } from '../services/auth';
+import { LoadingBarContext } from "../components/LoadingBar";
 
 const Profile = () => {
-    const history = useHistory();
-
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
+    // States
+    const history = useHistory();
     const [profile, setProfile] = useState(null);
+    const [submitActive, setSubmitActive] = useState(false);
+    const loadingBarRef = useContext(LoadingBarContext);
 
     // Validation schema by yup
     const schema = yup.object().shape({
@@ -25,30 +31,35 @@ const Profile = () => {
     })
 
     // form validation hook
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({ resolver: yupResolver(schema) });
+    const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm({ resolver: yupResolver(schema), mode: "onChange" });
 
     // On component load
     useEffect(() => {
         if (authState.isLoggedIn) {
-            setProfile({
-                name: authState.user.Name,
-                phone: authState.user.Phone,
-                email: authState.user.Email,
-                dob: "1995-02-28",
-            })
+            setProfile({ name: authState.user.Name, phone: authState.user.Phone, email: authState.user.Email, dob: authState.user.DOB, })
         } else {
             history.push("/login");
         }
     }, [])
     // On Profile update
     useEffect(() => {
-        reset(profile)
+        reset(profile);
     }, [profile])
 
     // Login form submit handler
     const onSubmitHandler = (data) => {
         console.log("OnSubmitHandler:- ", data);
-        // dispatch(loaderToggleAction(true));
+        setSubmitActive(true);
+        loadingBarRef.current.continuousStart();
+        update(authState.user.id, data.name, data.phone, data.email, data.dob).then((res) => {
+            loadingBarRef.current.complete();
+            setSubmitActive(false);
+            toast.success("Profile successfully updated");
+        }).catch((err) => {
+            loadingBarRef.current.complete();
+            setSubmitActive(false);
+            toast.error(err.response?.data.error);
+        });
     }
 
     return (
@@ -86,8 +97,18 @@ const Profile = () => {
                                     <p className="text-xs py-px px-2 text-red-600">{errors.password?.message}</p>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <button class="py-2 px-4 text-indigo-700 font-bold transition-colors duration-150 rounded focus:shadow-outline hover:bg-indigo-50 hover:text-indigo-900">Reset password</button>
-                                    <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline " type="submit" >Save changes</button>
+                                    <button className="py-2 px-4 text-indigo-700 font-bold transition-colors duration-150 rounded focus:shadow-outline hover:bg-indigo-50 hover:text-indigo-900">Reset password</button>
+                                    {/* <button className={`bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-not-allowed opacity-50 ${!is}`} disabled={!isValid} type="submit" >Save changes</button> */}
+                                    <button
+                                        className={classNames(
+                                            isValid ? '' : ' cursor-not-allowed opacity-50',
+                                            'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                                        )}
+                                        disabled={!isValid} type="submit"
+                                    >
+                                        {submitActive ? "Saving..." : "Save changes"}
+                                    </button>
+
                                 </div>
                             </form>
                         </div>
