@@ -15,6 +15,7 @@ import "./styles/tailwind.css";
 import "./styles/custom.css";
 import 'react-toastify/dist/ReactToastify.css';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import 'react-chat-elements/dist/main.css';
 
 ReactDOM.render(
   <Provider store={store}>

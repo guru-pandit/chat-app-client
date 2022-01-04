@@ -27,7 +27,7 @@ const Dashboard = () => {
             socket.connect();
 
             // on connect listener
-            socket.on("connect", () => {
+            socket.once("connect", () => {
                 console.log("Connected:- ", socket.id);
                 setConnection(authState.user?.id, socket.id).then((response) => {
                     // console.log("Connected-Response:- ", response.data);
@@ -39,7 +39,7 @@ const Dashboard = () => {
             });
 
             // on disconnect listener
-            socket.on("disconnect", () => {
+            socket.once("disconnect", () => {
                 console.log("Disconnected... ");
                 // toast.error("Disconnected...", toastOptions);
                 dispatch(connectionFailAction());
