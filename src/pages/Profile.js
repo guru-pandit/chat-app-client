@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -114,7 +114,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </main>
-            </div>
+            </div >
         </>
     )
 }

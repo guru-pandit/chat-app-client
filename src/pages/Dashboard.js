@@ -23,7 +23,7 @@ const Dashboard = () => {
     // check user is logged in or not on first render
     useEffect(() => {
         if (authState.isLoggedIn) {
-            // Connect to the socket
+            // // Connect to the socket
             socket.connect();
 
             // on connect listener
@@ -47,6 +47,8 @@ const Dashboard = () => {
         } else {
             history.push("/login");
         }
+
+        return () => socket.disconnect();
     }, []);
 
     // Fetching conversations

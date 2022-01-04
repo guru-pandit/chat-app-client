@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { loginAction } from "../actions/auth.action";
 import { loaderToggleAction } from '../actions/common.action';
+import { connectToSocket } from "../services/socket";
 
 const Login = () => {
     const history = useHistory();

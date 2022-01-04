@@ -6,6 +6,7 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import { logoutAction } from "../actions/auth.action";
 import { loaderToggleAction } from "../actions/common.action";
+import { disconnectFromSocket } from "../services/socket";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -26,6 +27,11 @@ const Navbar = () => {
         history.push("/login");
     }
 
+    // on logo click
+    const onLogoClick = () => {
+        history.push("/dashboard")
+    }
+
     return (
         <>
             <Disclosure as="nav" className="bg-gray-800">
@@ -34,7 +40,7 @@ const Navbar = () => {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="flex items-center justify-between h-16">
                                 <div className="flex items-center">
-                                    <div className="flex-shrink-0">
+                                    <div className="flex-shrink-0 cursor-pointer" onClick={onLogoClick}>
                                         <img
                                             className="h-8 w-8"
                                             src="/images/logo.svg"
