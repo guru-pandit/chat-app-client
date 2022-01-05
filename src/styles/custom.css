@@ -17,3 +17,25 @@
     height: 10px;
     padding: rem;
 }
+
+/* ----- REACT CHAT ELEMENT ------- */
+.rce-citem{
+    background: #1f2937 !important;
+    color: white !important; 
+}
+
+.rce-citem:hover{
+    background: #374151 !important;
+}
+
+.rce-citem-body--top-time{
+color: white !important; 
+}
+
+.rce-citem-body--bottom-title{
+    color: #9ca3af!important;
+}
+
+.rce-citem-body--bottom-status span{
+    background: #15803d !important;
+}

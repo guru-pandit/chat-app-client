@@ -8,6 +8,7 @@ import Navbar from './Navbar';
 import ImgUpload from './ImgUpload';
 import LoadingBar from './LoadingBar';
 import Button from './Button';
+import Friends from './Friends';
 
 export {
     ChatSection,
@@ -19,5 +20,6 @@ export {
     Navbar,
     ImgUpload,
     LoadingBar,
-    Button
+    Button,
+    Friends
 }

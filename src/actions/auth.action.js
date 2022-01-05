@@ -1,6 +1,7 @@
-import { login, register, logout } from "../services/auth";
-import { loaderToggleAction } from "./common.action";
 import { toast } from "react-toastify";
+
+import { login, register, logout, getAllFriends } from "../services/auth";
+import { loaderToggleAction } from "./common.action";
 
 export const CONNECTION_SUCCESS = "CONNECTION_SUCCESS";
 export const CONNECTION_FAIL = "CONNECTION_FAIL";
@@ -9,11 +10,11 @@ export const REGISTER_FAIL = "REGISTER_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const GET_ALL_FRIENDS_SUCCESS = "GET_ALL_FRIENDS_SUCCESS";
 
 export function homeAction(data) {
     return (dispatch) => {
         return dispatch({ type: LOGIN_SUCCESS, payload: data });
-
     }
 }
 
@@ -77,6 +78,19 @@ export function logoutAction() {
         })
     }
 };
+
+export function getAllFriendsAction(uid) {
+    // console.log("getAllFriendsAction");
+    return (dispatch) => {
+        getAllFriends(uid).then((response) => {
+            console.log("getAllFriendsAction-res:- ", response.data);
+            dispatch({ type: GET_ALL_FRIENDS_SUCCESS, payload: response.data });
+        }).catch((err) => {
+            console.log("getAllFriendsAction-err", err.response?.data.error);
+            toast.error(err.response?.data.error);
+        })
+    }
+}
 
 export function connectionSuccessAction() {
     return (dispatch) => {

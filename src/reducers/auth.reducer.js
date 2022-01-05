@@ -1,8 +1,12 @@
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, CONNECTION_SUCCESS, CONNECTION_FAIL } from "../actions/auth.action";
+import {
+    REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS,
+    CONNECTION_SUCCESS, CONNECTION_FAIL, GET_ALL_FRIENDS_SUCCESS
+} from "../actions/auth.action";
 
 const initialState = {
     isLoggedIn: false,
     user: { id: null, Name: null, Phone: null, Email: null, DOB: null, Avatar: null },
+    friends: null,
     isConnected: false
 };
 
@@ -35,6 +39,11 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 isLoggedIn: true,
                 user: { id: payload.id, Name: payload.Name, Phone: payload.Phone, Email: payload.Email, DOB: payload.DOB, Avatar: payload.Avatar },
+            }
+        case GET_ALL_FRIENDS_SUCCESS:
+            return {
+                ...state,
+                friends: payload
             }
         case LOGIN_FAIL:
             return {

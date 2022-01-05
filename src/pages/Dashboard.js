@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import { ChatSection, Conversation, Navbar } from '../components';
+import { ChatSection, Conversation, Navbar, Friends } from '../components';
 import { getConverationsAction, setCurrentChatAction } from "../actions/chat.action";
-import { connectionFailAction, connectionSuccessAction } from "../actions/auth.action";
+import { connectionFailAction, connectionSuccessAction, getAllFriendsAction } from "../actions/auth.action";
 import { searchOthers, createConversation, setConnection } from "../services/chat";
 import socket from '../services/socket';
 
@@ -50,6 +50,11 @@ const Dashboard = () => {
 
         return () => socket.disconnect();
     }, []);
+
+    // Running on first render
+    useEffect(() => {
+        dispatch(getAllFriendsAction(authState.user.id))
+    }, [])
 
     // Fetching conversations
     useEffect(() => {
@@ -132,11 +137,12 @@ const Dashboard = () => {
                                 </div>
                                 <div className=''>
                                     {
-                                        chatState.conversations.map((conv) => (
-                                            <div key={conv.id} onClick={() => dispatch(setCurrentChatAction(conv))}>
-                                                <Conversation conversation={conv} currentChat={chatState.currentChat} />
-                                            </div>
-                                        ))
+                                        // chatState.conversations.map((conv) => (
+                                        //     <div key={conv.id} onClick={() => dispatch(setCurrentChatAction(conv))}>
+                                        //         <Conversation conversation={conv} currentChat={chatState.currentChat} />
+                                        //     </div>
+                                        // ))
+                                        authState.friends && <Friends />
                                     }
                                 </div>
                             </div>
