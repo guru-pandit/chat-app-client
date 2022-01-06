@@ -44,13 +44,21 @@ const Friends = () => {
                             <div className="w-full flex flex-col ml-3">
                                 <div
                                     className="flex justify-between">
-                                    <span className='text-base font-medium leading-none text-white'>{f.Name}</span>
-                                    {/* <span className='bg-green-600 text-white w-5 h-5 text-center leading-5 rounded-full' style={{ "fontSize": ".6rem" }}>{"0"}</span> */}
+                                    <span className='text-base font-medium leading-none text-white'>
+                                        {f.Name}
+                                    </span>
+                                    {/* <span className='bg-green-600 text-white w-5 h-5 text-center leading-5 rounded-full' style={{ "fontSize": ".6rem" }}>
+                                        {"0"}
+                                    </span> */}
                                 </div>
                                 <div
                                     className="mt-1.5 flex items-center justify-between">
-                                    <span className='text-sm font-normal leading-none text-gray-400'>{f.LastMessage[0].Body}</span>
-                                    <span className='text-gray-400' style={{ "fontSize": ".6rem" }}>{moment.utc(f.LastMessage[0].MessageSentAt).fromNow()}</span>
+                                    <span className='text-sm font-normal leading-none text-gray-400'>
+                                        {/* {f.LastMessage[0].Body} */}
+                                    </span>
+                                    <span className='text-gray-400' style={{ "fontSize": ".6rem" }}>
+                                        {/* {moment.utc(f.LastMessage[0].MessageSentAt).fromNow()} */}
+                                    </span>
                                 </div>
                             </div>
                         </div>
