@@ -1,11 +1,15 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import moment from 'moment';
 
-import { setCurrentChatAction } from './../actions/chat.action';
+import { getAllOldMessagesAction, setCurrentChatAction } from './../actions/chat.action';
 import { classNames } from './../helpers/commonHelper';
+import { fetchMessages } from '../services/chat';
+import { LoadingBarContext } from './LoadingBar';
 
 const Friends = () => {
+    const loadingBarRef = useContext(LoadingBarContext);
+
     // Redux selector and dispatch
     const authState = useSelector((state => state.auth));
     const chatState = useSelector((state => state.chat));
@@ -15,11 +19,19 @@ const Friends = () => {
         console.log("Friends:- ", authState.friends);
     }, [])
 
+    const onChatUserSelect = (f) => {
+        loadingBarRef.current.continuousStart();
+        dispatch(setCurrentChatAction(f));
+        // dispatch(getAllOldMessagesAction(f.ConversationID)).then((result) => {
+        //     loadingBarRef.current.complete();
+        // })
+    }
+
     return (
         <>
             {
                 authState.friends?.map((f) => (
-                    <div key={f.id} onClick={() => dispatch(setCurrentChatAction(f))}>
+                    <div key={f.id} onClick={() => onChatUserSelect(f)}>
                         <div
                             className={classNames(
                                 chatState.currentChat?.id == f.id ? 'bg-gray-700' : '',
@@ -33,7 +45,7 @@ const Friends = () => {
                                 <div
                                     className="flex justify-between">
                                     <span className='text-base font-medium leading-none text-white'>{f.Name}</span>
-                                    <span className='bg-green-600 text-white w-5 h-5 text-center leading-5 rounded-full' style={{ "fontSize": ".6rem" }}>{"0"}</span>
+                                    {/* <span className='bg-green-600 text-white w-5 h-5 text-center leading-5 rounded-full' style={{ "fontSize": ".6rem" }}>{"0"}</span> */}
                                 </div>
                                 <div
                                     className="mt-1.5 flex items-center justify-between">

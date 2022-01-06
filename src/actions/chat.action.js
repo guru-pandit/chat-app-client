@@ -1,4 +1,6 @@
-import { getOldMessages, getConversation, searchOthers } from "../services/chat";
+import { toast } from "react-toastify";
+
+import { getOldMessages, getConversation, searchOthers, fetchMessages } from "../services/chat";
 
 export const GET_CONVERSATION_SUCCESS = "GET_CONVERSATION_SUCCESS";
 export const GET_CONVERSATION_FAILED = "GET_CONVERSATION_FAILED";
@@ -12,11 +14,15 @@ export function getConverationsAction(id) {
     return (dispatch) => {
         return getConversation(id).then((response) => {
             // console.log("GetConversation-response:- ", response.data);
-            let payload = response.data
-            dispatch({ type: GET_CONVERSATION_SUCCESS, payload });
+
+            dispatch({ type: GET_CONVERSATION_SUCCESS, payload: response.data });
+
             return Promise.resolve();
         }).catch((err) => {
             dispatch({ type: GET_CONVERSATION_FAILED });
+
+            toast.error(err.response?.data.error);
+
             return Promise.reject();
         })
     }
@@ -33,6 +39,20 @@ export function getConverationsAction(id) {
 //         })
 //     }
 // }
+
+export function getAllOldMessagesAction(cid) {
+    return (dispatch) => {
+        return fetchMessages(cid).then((response) => {
+            dispatch({ type: SET_MESSAGES_FOR_CURRENT_CHAT_USER, payload: response.data });
+
+            return Promise.resolve();
+        }).catch((err) => {
+            console.log("GetAllOldMessagesAction-err", err.response?.data.error);
+
+            toast.error(err.response?.data.error);
+        });
+    }
+}
 
 export function setCurrentChatAction(payload) {
     return { type: SET_CURRENT_CHAT_USER, payload }

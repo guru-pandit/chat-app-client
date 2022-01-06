@@ -18,9 +18,11 @@ function App() {
   // Following method run on first render
   useEffect(() => {
     home().then((res) => {
+      console.log("Home:- ", res.data);
       dispatch(homeAction(res.data));
       history.push("/dashboard");
     }).catch((err) => {
+      console.log("Home-err:- ", err.response?.data.error);
       history.push("/login");
     })
   }, [])

@@ -7,18 +7,20 @@ const Message = ({ messages }) => {
     // ref to the dummy div
     const messageEndRef = useRef();
 
+    // Redux selector and dispatch
+    const authState = useSelector((state) => state.auth)
+    const chatState = useSelector((state) => state.chat)
+
     // make chat box always scroll down
     useEffect(() => {
         messageEndRef.current.scrollIntoView()
-    }, [messages])
+    }, [chatState.messages])
 
-    // Redux selector and dispatch
-    const authState = useSelector((state) => state.auth)
 
     return (
         <div className="h-full w-full overflow-y-scroll flex flex-col px-3 my-3" style={{ "maxHeight": "440px" }} >
             {
-                messages?.map((msg, i) => (
+                chatState.messages?.map((msg, i) => (
                     msg.SenderID == authState.user.id ? (
                         <div key={i} className="flex flex-col self-end max-w-xs bg-gray-100 mb-2 px-3 py-1 rounded-2xl rounded-br-none shadow-sm">
                             <span

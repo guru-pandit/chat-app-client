@@ -23,14 +23,19 @@ export function registerAction(name, phone, password) {
     return (dispatch) => {
         return register(name, phone, password).then((response) => {
             // console.log("RegisterAPI-Response:-", response);
+
             dispatch(loaderToggleAction(false));
             dispatch({ type: REGISTER_SUCCESS });
+
             return Promise.resolve();
         }).catch((err) => {
             console.log("RegisterAction-err", err.response?.data.error);
-            dispatch(loaderToggleAction(false));
+
             toast.error(err.response?.data.error);
+
+            dispatch(loaderToggleAction(false));
             dispatch({ type: REGISTER_FAIL });
+
             return Promise.reject();
         })
     }
@@ -68,13 +73,16 @@ export function logoutAction() {
     return (dispatch) => {
         logout().then((response) => {
             // console.log("LogoutAction-res:- ", response);
-            localStorage.removeItem("authToken");
+
+            localStorage.clear();
             dispatch({ type: LOGOUT_SUCCESS });
             dispatch(loaderToggleAction(false));
         }).catch((err) => {
             console.log("LoginAction-err", err.response?.data.error);
-            dispatch(loaderToggleAction(false));
+
             toast.error(err.response?.data.error);
+
+            dispatch(loaderToggleAction(false));
         })
     }
 };
@@ -84,9 +92,11 @@ export function getAllFriendsAction(uid) {
     return (dispatch) => {
         getAllFriends(uid).then((response) => {
             console.log("getAllFriendsAction-res:- ", response.data);
+
             dispatch({ type: GET_ALL_FRIENDS_SUCCESS, payload: response.data });
         }).catch((err) => {
             console.log("getAllFriendsAction-err", err.response?.data.error);
+
             toast.error(err.response?.data.error);
         })
     }

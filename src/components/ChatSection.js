@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PaperAirplaneIcon } from "@heroicons/react/solid";
 
 import socket from "../services/socket";
 import { fetchMessages, getUser, updateMessage } from "../services/chat";
-import { setMessagesAction } from "../actions/chat.action";
+import { getAllOldMessagesAction, setMessagesAction } from "../actions/chat.action";
 import ChatUser from "./ChatUser";
 import Message from './Message';
+import { LoadingBarContext } from "./LoadingBar";
 
 const ChatSection = ({ currentChat }) => {
     const [message, setMessage] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [user, setUser] = useState(null);
-
+    const loadingBarRef = useContext(LoadingBarContext);
     // Redux selector and dispatch
     const authState = useSelector((state) => state.auth);
     const chatState = useSelector((state) => state.chat);
@@ -26,6 +27,9 @@ const ChatSection = ({ currentChat }) => {
     useEffect(() => {
         console.log("User:- ", user);
     }, [user])
+    useEffect(() => {
+        console.log("ArrivalMessage:- ", arrivalMessage);
+    }, [arrivalMessage])
 
     // Checking arriving message
     useEffect(() => {
@@ -62,34 +66,41 @@ const ChatSection = ({ currentChat }) => {
     }, [])
 
     // Fetching friends details
-    useEffect(() => {
-        // console.log("CurrentChat:- ", currentChat);
-        const friendsID = currentChat?.Members?.find((f) => f != authState.user.id);
-        // console.log("friendsID:- ", friendsID);
-        getUser(friendsID).then((response) => {
-            // console.log("GetUser-res", response.data);
-            setUser(response.data);
-        }).catch((err) => {
-            console.log("GetUser-err:- ", err.response?.data.error);
-        })
-    }, [currentChat, authState.user.id]);
+    // useEffect(() => {
+    //     // console.log("CurrentChat:- ", currentChat);
+    //     const friendsID = currentChat?.Members?.find((f) => f != authState.user.id);
+    //     // console.log("friendsID:- ", friendsID);
+    //     getUser(friendsID).then((response) => {
+    //         // console.log("GetUser-res", response.data);
+    //         setUser(response.data);
+    //     }).catch((err) => {
+    //         console.log("GetUser-err:- ", err.response?.data.error);
+    //     })
+    // }, [currentChat, authState.user.id]);
 
     // Fetching messages
+    // useEffect(() => {
+    //     fetchMessages(currentChat?.id).then((response) => {
+    //         // console.log("FetchMessages:- ", response.data);
+    //         dispatch(setMessagesAction(response.data));
+    //     }).catch((err) => {
+    //         // if (err.response.status == 400) {
+    //         //     console.log("FetchMessages-err:- ", err.response?.data.error);
+    //         //     dispatch(setMessagesAction([]));
+    //         // }
+    //     })
+    // }, [currentChat]);
+
+    // Fetching old messages
     useEffect(() => {
-        fetchMessages(currentChat?.id).then((response) => {
-            // console.log("FetchMessages:- ", response.data);
-            dispatch(setMessagesAction(response.data));
-        }).catch((err) => {
-            if (err.response.status == 400) {
-                console.log("FetchMessages-err:- ", err.response?.data.error);
-                dispatch(setMessagesAction([]));
-            }
+        currentChat.ConversationID && dispatch(getAllOldMessagesAction(currentChat.ConversationID)).then(() => {
+            loadingBarRef.current.complete();
         })
     }, [currentChat]);
 
     // adding arrival message to the messages array
     useEffect(() => {
-        arrivalMessage && currentChat?.Members.includes(arrivalMessage.SenderID.toString()) && dispatch(setMessagesAction([...chatState.messages, arrivalMessage]))
+        arrivalMessage && currentChat?.ConversationMembers.includes(arrivalMessage.SenderID.toString()) && dispatch(setMessagesAction([...chatState.messages, arrivalMessage]))
     }, [arrivalMessage, currentChat])
 
     // Message sumbit handler
@@ -98,8 +109,8 @@ const ChatSection = ({ currentChat }) => {
         let sendingMessage = {
             Body: message,
             SenderID: authState.user.id,
-            ReceiverID: user.id,
-            ConversationID: currentChat.id,
+            ReceiverID: chatState.currentChat.id,
+            ConversationID: currentChat.ConversationID,
             MessageSentAt: Date.now()
         }
 
@@ -113,11 +124,12 @@ const ChatSection = ({ currentChat }) => {
         <div className='w-full h-full flex flex-col'>
             {/* receiver */}
             <div>
-                {user && <ChatUser user={user} />}
+                {chatState.currentChat && <ChatUser user={chatState.currentChat} />}
             </div>
             {/* messages */}
             <div className='flex-grow'>
-                <Message messages={chatState.messages} />
+                {/* {chatState.messages && <Message messages={chatState.messages} />} */}
+                {chatState.messages && <Message />}
             </div>
             <div className=''>
                 <form className="bg-white px-5" onSubmit={onSubmitHandler}>
