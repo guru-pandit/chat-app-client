@@ -11,6 +11,7 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const GET_ALL_FRIENDS_SUCCESS = "GET_ALL_FRIENDS_SUCCESS";
+export const UPDATE_FRIENDS_SUCCESS = "UPDATE_FRIENDS_SUCCESS";
 
 export function homeAction(data) {
     return (dispatch) => {
@@ -99,6 +100,12 @@ export function getAllFriendsAction(uid) {
 
             toast.error(err.response?.data.error);
         })
+    }
+}
+
+export function updateFriendsAction(payload) {
+    return (dispatch) => {
+        return dispatch({ type: UPDATE_FRIENDS_SUCCESS, payload });
     }
 }
 

@@ -1,7 +1,13 @@
+import { useEffect } from "react"
+
 import moment from "moment";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
 
 const ChatUser = ({ user }) => {
+    useEffect(() => {
+        console.log("ChatUser-user:- ", user);
+    }, [user])
+
     return (
         <>
             <div className="flex items-center p-2 bg-gray-200">
@@ -12,7 +18,7 @@ const ChatUser = ({ user }) => {
                     <div className="text-base font-semibold leading-none text-gray-900">{user?.Name}
                         {
                             user?.ConnectionDetail.IsConnected ? (
-                                <span className="h-2.5 w-2.5 p-.5 ml-1.5 inline-block border-4 border-green-500 rounded-full">  </span>
+                                <span className="h-2.5 w-2.5 ml-1.5 inline-block bg-green-500 rounded-full"></span>
                             ) : (
                                 <span className="p-px ml-3 inline-block text-xs text-gray-500 font-medium">{moment.utc(user?.ConnectionDetail.DisconnectedAt).fromNow()}</span>
                             )

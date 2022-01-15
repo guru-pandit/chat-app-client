@@ -38,8 +38,12 @@ const Friends = () => {
                                 'flex items-center p-2 cursor-pointer hover:bg-gray-700'
                             )}
                         >
-                            <div className="flex-shrink-0">
+                            <div className="flex-shrink-0 relative">
                                 <img className="h-12 w-12 rounded-full" src={f.Avatar} alt={f.Name} />
+                                <span className={classNames(
+                                    f.IsConnected ? "bg-green-500" : "bg-red-500",
+                                    "h-2.5 w-2.5 inline-block rounded-full absolute right-0.5 bottom-0.5"
+                                )}></span>
                             </div>
                             <div className="w-full flex flex-col ml-3">
                                 <div

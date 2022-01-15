@@ -8,6 +8,8 @@ import { getConverationsAction, setCurrentChatAction } from "../actions/chat.act
 import { connectionFailAction, connectionSuccessAction, getAllFriendsAction } from "../actions/auth.action";
 import { searchOthers, createConversation, setConnection } from "../services/chat";
 import socket from '../services/socket';
+import { updateIsConnected } from '../helpers/commonHelper';
+import { updateFriendsAction } from './../actions/auth.action';
 
 const Dashboard = () => {
     const history = useHistory();
@@ -47,6 +49,19 @@ const Dashboard = () => {
         } else {
             history.push("/login");
         }
+
+        // on online listener
+        socket.on("user online", (data) => {
+            // console.log("UserOnline:- ", data);
+            let updatedFriends = updateIsConnected(authState.friends, data);
+            dispatch(updateFriendsAction(updatedFriends));
+        });
+        // on offline listener
+        socket.on("user offline", (data) => {
+            // console.log("UserOffline:- ", data);
+            let updatedFriends = updateIsConnected(authState.friends, data);
+            dispatch(updateFriendsAction(updatedFriends));
+        });
 
         return () => socket.disconnect();
     }, []);
